@@ -26,15 +26,21 @@ const allSuites = (sourceFile) => {
   const searchDescendants = (node, parentSuite) => {
     const children = node.getChildren(sourceFile);
     for (const child of children) {
-      if (ts.isCallLikeExpression(child)) {
-        const functionName = child.expression.escapedText;
+      if (ts.isCallExpression(child)) {
+        const functionName = child.expression.getText();
         if (functionName === 'describe') {
-          const newSuite = {name: child['arguments'][0].text, suites: [], tests: []};
-          parentSuite.suites.push(newSuite);
-          searchDescendants(child, newSuite);
+          const firstArgument = child.arguments[0];
+          if (ts.isStringLiteral(firstArgument)) {
+            const newSuite = {name: firstArgument.text, suites: [], tests: []};
+            parentSuite.suites.push(newSuite);
+            searchDescendants(child, newSuite);
+          }
         } else if (functionName === 'it') {
-          const newTest = {name: child['arguments'][0].text};
-          parentSuite.tests.push(newTest);
+          const firstArgument = child.arguments[0];
+          if (ts.isStringLiteral(firstArgument)) {
+            const newTest = {name: firstArgument.text};
+            parentSuite.tests.push(newTest);
+          }
         }
       } else {
         searchDescendants(child, parentSuite);
