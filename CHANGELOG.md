@@ -17,7 +17,7 @@
       an array `[]` but it became `{suites: [], tests: []}` - What is a good name for it?
       ... not sure there is a better name, sticking to suite for now
 
-# v1
+# v1 - Run on one file
 - [x] `./run.sh npm i` to install all the dependencies
 - [x] `./run.sh npm test` to run the tests
 - [x] `./run.sh npm run parse-file <path/to/testfile.js>` to parse the test descriptions out of the given file 
