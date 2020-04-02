@@ -6,6 +6,13 @@
       e.g. `it("counts the number of elements", () { assert(lengthOfAttrributes(...)) })`
       there is no overlap in words "counts" vs. "length", "elements" vs. "attributes"
       the test and its description should not use different language
+- [ ] take multiple test files as parameter and parse them
+      challenges are:
+   - [ ] name this group of tests :) (might be a file, might be a `describe`)
+   - [ ] make it fast (reading many files and so on)
+   - [ ] how are parameters (many files) passed?
+   - [ ] must work for URLs and files
+- [ ] introduce TS
 
 # v1
 - [x] `./run.sh npm i` to install all the dependencies
