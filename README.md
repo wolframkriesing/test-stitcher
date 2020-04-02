@@ -84,3 +84,4 @@ The most important commands:
 - `./run.sh npm i` to install all the dependencies
 - `./run.sh npm test` to run the tests
 - `./run.sh npm run parse-file <path/to/testfile.js>` to parse the test descriptions out of the given file and write it to stdout
+- if you want to have multiple terminals for entering the docker container, you can use `docker exec -it test-stitcher /bin/bash`
