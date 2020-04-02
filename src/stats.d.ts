@@ -12,3 +12,5 @@ export type Stats = {
     suites: number;
   }
 }
+
+export function stats(all: Suite): Stats;
