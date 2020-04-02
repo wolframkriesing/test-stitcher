@@ -5,10 +5,10 @@ import {extractTestSuites} from './extractTextFromTests.js';
 describe('Extract the text from tests', () => {
   describe('GIVEN a string', () => {
     it('WHEN it is empty THEN return no test suites', () => {
-      assert.deepStrictEqual(extractTestSuites(''), {suites: [], tests: []});
+      assert.deepStrictEqual(extractTestSuites(''), {name: '', suites: [], tests: []});
     });
     it('WHEN it contains not test THEN return no test suites', () => {
-      assert.deepStrictEqual(extractTestSuites('var x = 1; // but no test'), {suites: [], tests: []});
+      assert.deepStrictEqual(extractTestSuites('var x = 1; // but no test'), {name: '', suites: [], tests: []});
     });
     describe('WHEN it contains one `describe`', () => {
       it('THEN return one test suite', () => {

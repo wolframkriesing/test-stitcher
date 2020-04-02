@@ -1,5 +1,9 @@
 import * as ts from 'typescript';
 
+/**
+ * @param {string} sourceCode
+ * @returns {{tests: *[], suites: *[]}}
+ */
 const parseTestsOutOfSourceCode = (sourceCode) => {
   const sourceFile = ts.createSourceFile(
       "fileName",
@@ -9,9 +13,16 @@ const parseTestsOutOfSourceCode = (sourceCode) => {
     );
   return allSuites(sourceFile);
 };
-
+/**
+ * @param sourceFile
+ * @returns {Suite}
+ */
 const allSuites = (sourceFile) => {
-  const suites = {suites: [], tests: []};
+  const suites = {name: '', suites: [], tests: []};
+  /**
+   * @param node
+   * @param {Suite} parentSuite
+   */
   const searchDescendants = (node, parentSuite) => {
     const children = node.getChildren(sourceFile);
     for (const child of children) {
