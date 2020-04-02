@@ -8,5 +8,5 @@
     "noUnusedLocals": true,
     "strict": true
   },
-  "include": ["typings", "src/stats.js"]
+  "include": ["typings", "src/stats.*"]
 }
