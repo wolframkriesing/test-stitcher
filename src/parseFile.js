@@ -1,10 +1,18 @@
 import {extractTextFromFile} from './extractTextFromFile.js';
 import {stats} from './stats.js';
 
+/**
+ * @param {Test[]} tests
+ * @param {number} depth
+ */
 const printTests = (tests, depth) => {
   const prefix = new Array(depth).fill('  ').join('');
   tests.forEach(test => console.log(prefix + test.name));
 };
+/**
+ * @param {Suite} all
+ * @param {number} depth
+ */
 const printTestSuites = (all, depth = 0) => {
   const {suites} = all;
   const prefix = new Array(depth).fill('  ').join('');
@@ -14,6 +22,9 @@ const printTestSuites = (all, depth = 0) => {
     suite.suites ? printTestSuites(suite, depth + 1) : null;
   });
 };
+/**
+ * @param {Stats} stats
+ */
 const printStats = (stats) => {
   console.log("\nStatistics\n-----------");
   console.log(JSON.stringify(stats, null, 4));
