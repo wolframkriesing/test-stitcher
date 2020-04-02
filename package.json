@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -r esm src/*spec.js",
-    "parse-file": "node -r esm ./src/parseFile.js"
+    "parse-file": "node -r esm ./src/parseFile.js",
+    "dev:test": "npm run test -- --watch --bail"
   },
   "repository": {
     "type": "git",
