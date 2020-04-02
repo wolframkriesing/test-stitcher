@@ -13,6 +13,9 @@
    - [ ] how are parameters (many files) passed?
    - [ ] must work for URLs and files
 - [ ] introduce TS
+- [ ] all `suites` need to be renamed to a better name, it used to be
+      an array `[]` but it became `{suites: [], tests: []}` - What is a good name for it?
+      ... not sure there is a better name, sticking to suite for now
 
 # v1
 - [x] `./run.sh npm i` to install all the dependencies
@@ -22,6 +25,4 @@
 - [x] parse files over http(s), e.g. jskatas katas, jslang katas
 - [x] basic stats, #tests, #test suite
 - [x] implement tests on the root level
-- [ ] all `suites` need to be renamed to a better name, it used to be
-      an array `[]` but it became `{suites: [], tests: []}` - What is a good name for it?
 - [x] rename the project to test-stitcher
