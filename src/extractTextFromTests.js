@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 
 /**
  * @param {string} sourceCode
- * @returns {{tests: *[], suites: *[]}}
+ * @returns {Suite}
  */
 const parseTestsOutOfSourceCode = (sourceCode) => {
   const sourceFile = ts.createSourceFile(
