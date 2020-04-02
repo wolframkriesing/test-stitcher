@@ -12,7 +12,7 @@
 # v2
 - [ ] take multiple test files as parameter and parse them
       challenges are:
-   - [ ] name this group of tests :) (might be a file, might be a `describe`)
+   - [x] ~~name this group of tests :) (might be a file, might be a `describe`)~~ sticking with `suite`
    - [ ] make it fast (reading many files and so on)
    - [ ] how are parameters (many files) passed?
    - [ ] must work for URLs and files
