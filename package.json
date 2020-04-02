@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha -r esm src/*spec.js",
     "parse-file": "node -r esm ./src/parseFile.js",
-    "dev:test": "npm run test -- --watch --bail"
+    "dev:test": "npm run test -- --watch --bail",
+    "typecheck": "tsc",
+    "dev:typecheck": "npm run typecheck -- --watch"
   },
   "repository": {
     "type": "git",
@@ -20,9 +22,8 @@
   "homepage": "https://github.com/wolframkriesing/test-stitcher#readme",
   "devDependencies": {
     "esm": "^3.2.25",
-    "mocha": "^7.1.0"
-  },
-  "dependencies": {
+    "mocha": "^7.1.0",
     "typescript": "^3.8.3"
-  }
+  },
+  "dependencies": {}
 }
