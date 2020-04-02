@@ -1,19 +1,6 @@
 import * as ts from 'typescript';
 
 /**
- * @param {string} sourceCode
- * @returns {Suite}
- */
-const parseTestsOutOfSourceCode = (sourceCode) => {
-  const sourceFile = ts.createSourceFile(
-      "fileName",
-      sourceCode,
-      ts.ScriptTarget.ES2020,
-      true
-    );
-  return allSuites(sourceFile);
-};
-/**
  * @param {ts.SourceFile} sourceFile
  * @returns {Suite}
  */
@@ -51,4 +38,16 @@ const allSuites = (sourceFile) => {
   return suites;
 };
 
-export const extractTestSuites = parseTestsOutOfSourceCode;
+/**
+ * @param {string} sourceCode
+ * @returns {Suite}
+ */
+export const extractTestSuites = (sourceCode) => {
+  const sourceFile = ts.createSourceFile(
+      "fileName",
+      sourceCode,
+      ts.ScriptTarget.ES2020,
+      true
+    );
+  return allSuites(sourceFile);
+};
