@@ -1,4 +1,6 @@
-type Test = {};
+type Test = {
+  name: string;
+};
 
 type Suite = {
   name: string;

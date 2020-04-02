@@ -1,4 +1,4 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import {it, describe} from 'mocha';
 import {extractTestSuites} from './extractTextFromTests.js';
 
