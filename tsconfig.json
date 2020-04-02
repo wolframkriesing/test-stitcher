@@ -8,5 +8,5 @@
     "noUnusedLocals": true,
     "strict": true
   },
-  "include": ["typings", "src/types.d.ts", "src/stats.*", "src/extractTextFromTests.*"]
+  "include": ["typings", "src/types.d.ts", "src/stats.*", "src/e*"]
 }

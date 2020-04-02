@@ -1,14 +1,22 @@
-import path from 'path';
-import fs from 'fs';
-import https from 'https';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as https from 'https';
 import {extractTestSuites} from "./extractTextFromTests.js";
 
+/**
+ * @param {string} fileName
+ * @returns {string}
+ */
 const readFromLocalFilesystem = (fileName) => {
   const fullFileName = path.join(process.cwd(), fileName);
   const sourceCode = fs.readFileSync(fullFileName, 'utf8');
   return sourceCode;
 };
 const readSizeLimit = 2 * 1024 * 1024; // 1MB = 1024 * 1024
+/**
+ * @param {string} url
+ * @returns {Promise<string>}
+ */
 const readFromWeb = (url) => {
   return new Promise((resolve, reject) => {
     https.get(url, (res) => {
@@ -31,6 +39,10 @@ const readFromWeb = (url) => {
     });
   });
 };
+/**
+ * @param {string} fileName
+ * @returns {Promise<Suite>}
+ */
 export const extractTextFromFile = async (fileName) => {
   const readFileFunction = fileName.startsWith('http') ? readFromWeb : readFromLocalFilesystem;
   let sourceCode;
