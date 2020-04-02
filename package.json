@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.8",
+    "@types/typescript": "^2.0.0",
     "esm": "^3.2.25",
     "mocha": "^7.1.0",
     "typescript": "^3.8.3"

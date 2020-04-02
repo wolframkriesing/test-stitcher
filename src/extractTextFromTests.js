@@ -14,13 +14,13 @@ const parseTestsOutOfSourceCode = (sourceCode) => {
   return allSuites(sourceFile);
 };
 /**
- * @param sourceFile
+ * @param {ts.SourceFile} sourceFile
  * @returns {Suite}
  */
 const allSuites = (sourceFile) => {
   const suites = {name: '', suites: [], tests: []};
   /**
-   * @param node
+   * @param {ts.Node} node
    * @param {Suite} parentSuite
    */
   const searchDescendants = (node, parentSuite) => {
