@@ -1,11 +1,11 @@
 /**
- * @param {import("./stats").Suite[]} suites
+ * @param {Suite[]} suites
  * @returns {number}
  */
 const countSuites = (suites) => {
   /**
    * @param {number} count
-   * @param {import("./stats").Suite} suite
+   * @param {Suite} suite
    * @returns {number}
    */
   const reducer = (count, suite) => {
@@ -16,13 +16,13 @@ const countSuites = (suites) => {
   return childrenCount + suites.length;
 };
 /**
- * @param {import("./stats").Suite[]} suites
+ * @param {Suite[]} suites
  * @returns {number}
  */
 const countTestsInSuites = (suites) => {
   /**
    * @param {number} count
-   * @param {import("./stats").Suite} suite
+   * @param {Suite} suite
    * @returns {number}
    */
   const reducer = (count, suite) => {
@@ -32,13 +32,13 @@ const countTestsInSuites = (suites) => {
   return suites.reduce(reducer, 0);
 }
 /**
- * @param {import("./stats").Suite} all
+ * @param {Suite} all
  * @returns {number}
  */
 const countTests = (all) => countTestsInSuites(all.suites) + all.tests.length;
 /**
- * @param {import("./stats").Suite} all
- * @returns {import("./stats").Stats}
+ * @param {Suite} all
+ * @returns {Stats}
  */
 export const stats = (all) => {
   const {suites} = all;
