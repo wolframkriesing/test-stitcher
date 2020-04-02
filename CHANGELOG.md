@@ -16,7 +16,7 @@
    - [ ] make it fast (reading many files and so on)
    - [ ] how are parameters (many files) passed?
    - [ ] must work for URLs and files
-- [ ] introduce TS
+- [x] introduce TS
 - [ ] `./run.sh npm run parse-file <path/to/testfile.js> -- --json` to parse the test descriptions out of the given file as JSON
 
 # v1 - Run on one file
