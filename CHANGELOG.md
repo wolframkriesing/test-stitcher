@@ -14,7 +14,8 @@
       challenges are:
    - [x] ~~name this group of tests :) (might be a file, might be a `describe`)~~ sticking with `suite`
    - [ ] make it fast (reading many files and so on)
-   - [ ] how are parameters (many files) passed?
+   - [x] Q: how are parameters (many files) passed? 
+         A: as usually for scripts, separated by a space
    - [ ] must work for URLs and files
 - [x] introduce TS
 - [ ] `./run.sh npm run parse-file <path/to/testfile.js> -- --json` to parse the test descriptions out of the given file as JSON
