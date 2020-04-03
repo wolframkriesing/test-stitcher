@@ -26,7 +26,7 @@ const cloneSuiteAndNameIt = (suite) => {
  */
 const groupSuites = (suites) => {
   if (suites[0].origin.startsWith('dir/')) {
-    const dirSuite = {name: '', suites, tests: [], origin: 'dir'};
+    const dirSuite = {name: '', suites: suites.map(cloneSuiteAndNameIt), tests: [], origin: 'dir'};
     return groupSuites([dirSuite]);
   } else {
     return {
@@ -77,11 +77,11 @@ describe('Group test suites from multiple files and produce one containing them 
         assert.deepStrictEqual(groupedSuite.suites[0].name, 'dir');
         assert.deepStrictEqual(groupedSuite.suites[0].origin, 'dir');
       });
-      xit('AND the suites underneath', () => {
+      it('AND the suites underneath', () => {
         const groupedSuite = groupSuites([suite1, suite2]);
-        const childSuite = groupedSuite.suites[0];
-        assert.deepStrictEqual(childSuite.suites[0].name, 'file1.js');
-        assert.deepStrictEqual(childSuite.suites[1].name, 'file2.js');
+        const fileSuites = groupedSuite.suites[0].suites;
+        assert.deepStrictEqual(fileSuites[0].name, 'dir/file1.js');
+        assert.deepStrictEqual(fileSuites[1].name, 'dir/file2.js');
       });
     });
   });
