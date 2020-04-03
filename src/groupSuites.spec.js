@@ -191,7 +191,10 @@ const buildTree = (names) => {
   const uniques = arr => [...new Set(arr)];
   const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const root = {name: 'root', children: []};
-  dirNamesOnly.forEach(dir => { buildDirTree(dir.split('/'), 0, root); });
+  dirNamesOnly
+    .map(name => name.split('/'))
+    .forEach(dir => { buildDirTree(dir, 0, root); })
+  ;
   return root;
 };
 describe('Build tree from directory names', () => {
