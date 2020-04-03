@@ -172,14 +172,9 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
   });
 });
 
-const uniques = arr => [...new Set(arr)];
 const buildTree = (names) => {
-  const root = {name: 'root', children: []};
-  const isDirectory = name => name.includes('/');
-  const removeFilenames = name => name.split('/').slice(0, -1).join('/');
-  const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const createdDirs = new Map();
-  const generateSuites = (dir, depth, parent) => {
+  const buildDirTree = (dir, depth, parent) => {
     const subDirs = dir.split('/');
     const curDirName = subDirs[depth];
     const curFullDir = subDirs.slice(0, depth + 1).join('/');
@@ -188,14 +183,16 @@ const buildTree = (names) => {
     }
     parent.children.push(createdDirs.get(curFullDir));
     if (subDirs.length > depth + 1) {
-      generateSuites(dir, depth + 1, createdDirs.get(curFullDir));
+      buildDirTree(dir, depth + 1, createdDirs.get(curFullDir));
     }
   };
-  dirNamesOnly.map(dir => {
-    if (!createdDirs.has(dir)) {
-      createdDirs.set(dir, generateSuites(dir, 0, root));
-    }
-  });
+  
+  const isDirectory = name => name.includes('/');
+  const removeFilenames = name => name.split('/').slice(0, -1).join('/');
+  const uniques = arr => [...new Set(arr)];
+  const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
+  const root = {name: 'root', children: []};
+  dirNamesOnly.forEach(dir => { buildDirTree(dir, 0, root); });
   return root;
 };
 describe('Build tree from directory names', () => {
