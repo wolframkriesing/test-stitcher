@@ -172,18 +172,21 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
   });
 });
 
+const uniques = arr => [...new Set(arr)];
 const buildTree = (names) => {
   if (names.length > 2) {
-    const children = [
-      {name: 'dir', children: []},
-      {name: 'dir1', children: []},
-      {name: 'dir2', children: []},
-    ];
+    const dirs = uniques(names
+      .filter(name => name.includes('/'))
+      .map(name => name.split('/')[0])
+    );
+    const children = dirs.map(name => ({name, children: []}));
     return {name: 'root', children};
   } else if (names.length > 1) {
-    return {name: 'root', children: [{name: 'dir', children: []}]};
+    const name = names[0].split('/')[0];
+    return {name: 'root', children: [{name, children: []}]};
   }
-  return {name: 'root', children: [{name: 'dir1', children: []}]};
+  const name = names[0].split('/')[0];
+  return {name: 'root', children: [{name, children: []}]};
 };
 describe('Build tree from directory names', () => {
   describe('one level deep', () => {
