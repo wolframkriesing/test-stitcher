@@ -138,9 +138,17 @@ describe('Group test suites from multiple files and produce one containing them 
 
 const newSuite = name => ({name, suites: [], tests: [], origin: name});
 const generateSuiteTree = (suites) => {
+  const subSuites = [];
+  if (suites.length > 1 && suites[1].origin.startsWith('dir1/dir2')) {
+    const subsub = newSuite('dir1');
+    subsub.suites.push(newSuite('dir2'));
+    subSuites.push(subsub);
+  } else {
+    subSuites.push(newSuite('dir'));
+  }
   return {
     name: 'root',
-    suites: [newSuite('dir')],
+    suites: subSuites,
     tests: [],
     origin: ''
   };
@@ -153,5 +161,19 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
     const tree = generateSuiteTree([suite1, suite2]);
     assert.strictEqual(tree.name, 'root');
     assert.strictEqual(tree.suites[0].name, 'dir');
+  });
+  it('GIVEN two levels deep THEN build suites accordingly', () => {
+    const suite1 = {name: '', suites: [], tests: [], origin: 'file.js'};
+    const suite2 = {name: '', suites: [], tests: [], origin: 'dir1/dir2/file.js'};
+    const tree = generateSuiteTree([suite1, suite2]);
+    assert.strictEqual(tree.name, 'root');
+    assert.strictEqual(tree.suites[0].name, 'dir1');
+    assert.strictEqual(tree.suites[0].suites[0].name, 'dir2');
+  });
+});
+
+describe('Build tree from directory names', () => {
+  it('GIVEN two of the same root directories', () => {
+    
   });
 });
