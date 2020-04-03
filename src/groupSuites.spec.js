@@ -313,6 +313,15 @@ const splitPath = (paths) => {
   const prefix = dirNamesOnly[0];
   const allWithPrefix = dirNamesOnly.filter(name => name.startsWith(`${prefix}/`));
   const resultPaths = allWithPrefix.map(name => name.replace(`${prefix}/`, ''));
+  if (dirNamesOnly.length > 1 + allWithPrefix.length) {
+    const nextPrefix = dirNamesOnly[1 + allWithPrefix.length];
+    const allWithNextPrefix = dirNamesOnly.filter(name => name.startsWith(`${nextPrefix}/`));
+    const nextResultPaths = allWithNextPrefix.map(name => name.replace(`${nextPrefix}/`, ''));
+    return [
+      [prefix, ...resultPaths.map(name => name.split('/')).flat()],
+      [nextPrefix, ...nextResultPaths.map(name => name.split('/')).flat()],
+    ];
+  }
   return [[prefix, ...resultPaths.map(name => name.split('/')).flat()]];
 }
 describe('Split path name where files are', () => {
@@ -337,5 +346,16 @@ describe('Split path name where files are', () => {
       'tests/more/more1/1.js',
     ];
     assert.deepStrictEqual(splitPath(names), [['tests', 'more', 'more1']]);    
+  });
+  it('GIVEN many paths THEN every level is returned', () => {
+    const names = [
+      'fast/1.js',
+      'fast/more/more1/1.js',
+      'slow/1.js',
+      'slow/more/more1/1.js',
+    ];
+    assert.deepStrictEqual(splitPath(names), [
+      ['fast', 'more', 'more1'], ['slow', 'more', 'more1']
+    ]);    
   });
 });
