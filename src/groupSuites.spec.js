@@ -306,17 +306,20 @@ describe('Build tree from directory names', () => {
 });
 
 const splitPath = (paths) => {
-  if (paths[0].startsWith('tes')) {
-    return [['tests', 'more']];
+  const isDirectory = name => name.includes('/');
+  const removeFilenames = name => name.split('/').slice(0, -1).join('/');
+  const uniques = arr => [...new Set(arr)];
+  const dirNamesOnly = uniques(paths.filter(isDirectory).map(removeFilenames)).sort();
+  if (dirNamesOnly[1].startsWith(dirNamesOnly[0])) {
+    return [[dirNamesOnly[0], dirNamesOnly[1].replace(dirNamesOnly[0]+'/', '')]]
   }
-  return [['http://st.itch/tests', 'more']];
 }
 describe('Split path name where files are', () => {
   it('GIVEN a deep path THEN return just one path, not all parts', () => {
     const names = [
+      'http://st.itch/tests/more/2.js',
       'http://st.itch/tests/1.js',
       'http://st.itch/tests/2.js',
-      'http://st.itch/tests/more/2.js',
     ];
     assert.deepStrictEqual(splitPath(names), [['http://st.itch/tests', 'more']]);    
   });
