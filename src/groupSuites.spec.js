@@ -135,3 +135,23 @@ describe('Group test suites from multiple files and produce one containing them 
     });
   });
 });
+
+const newSuite = name => ({name, suites: [], tests: [], origin: name});
+const generateSuiteTree = (suites) => {
+  return {
+    name: 'root',
+    suites: [newSuite('dir')],
+    tests: [],
+    origin: ''
+  };
+};
+
+describe('From a list of files (and directories) build a hierarchy of suites', () => {
+  it('GIVEN one level deep THEN build suites accordingly', () => {
+    const suite1 = {name: '', suites: [], tests: [], origin: 'file.js'};
+    const suite2 = {name: '', suites: [], tests: [], origin: 'dir1/file.js'};
+    const tree = generateSuiteTree([suite1, suite2]);
+    assert.strictEqual(tree.name, 'root');
+    assert.strictEqual(tree.suites[0].name, 'dir');
+  });
+});
