@@ -181,13 +181,14 @@ const buildTree = (names) => {
   const createdDirs = new Map();
   const generateSuites = (dir, depth, parent) => {
     const subDirs = dir.split('/');
-    const firstLevelDir = subDirs[depth];
-    if (!createdDirs.has(firstLevelDir)) {
-      createdDirs.set(firstLevelDir, {name: firstLevelDir, children: []});
+    const curDirName = subDirs[depth];
+    const curFullDir = subDirs.slice(0, depth + 1).join('/');
+    if (!createdDirs.has(curFullDir)) {
+      createdDirs.set(curFullDir, {name: curDirName, children: []});
     }
-    parent.children.push(createdDirs.get(firstLevelDir));
-    if (subDirs.length > 1) {
-      generateSuites(subDirs.slice(1).join('/'), 0, createdDirs.get(firstLevelDir));
+    parent.children.push(createdDirs.get(curFullDir));
+    if (subDirs.length > depth + 1) {
+      generateSuites(dir, depth + 1, createdDirs.get(curFullDir));
     }
   };
   dirNamesOnly.map(dir => {
@@ -260,7 +261,7 @@ describe('Build tree from directory names', () => {
         ]}
       );
     });
-    xit('GIVEN recurring dir names', () => {
+    it('GIVEN recurring dir names', () => {
       const names = [
         'dir1/dir1/dir1/file1.js'
       ];
