@@ -174,8 +174,7 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
 
 const buildTree = (names) => {
   const createdDirs = new Map();
-  const buildDirTree = (dir, depth, parent) => {
-    const subDirs = dir.split('/');
+  const buildDirTree = (subDirs, depth, parent) => {
     const curDirName = subDirs[depth];
     const curFullDir = subDirs.slice(0, depth + 1).join('/');
     if (!createdDirs.has(curFullDir)) {
@@ -183,7 +182,7 @@ const buildTree = (names) => {
     }
     parent.children.push(createdDirs.get(curFullDir));
     if (subDirs.length > depth + 1) {
-      buildDirTree(dir, depth + 1, createdDirs.get(curFullDir));
+      buildDirTree(subDirs, depth + 1, createdDirs.get(curFullDir));
     }
   };
   
@@ -192,7 +191,7 @@ const buildTree = (names) => {
   const uniques = arr => [...new Set(arr)];
   const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const root = {name: 'root', children: []};
-  dirNamesOnly.forEach(dir => { buildDirTree(dir, 0, root); });
+  dirNamesOnly.forEach(dir => { buildDirTree(dir.split('/'), 0, root); });
   return root;
 };
 describe('Build tree from directory names', () => {
