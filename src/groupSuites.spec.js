@@ -274,5 +274,18 @@ describe('Build tree from directory names', () => {
         ]}
       );
     });
+    xit('GIVEN some long paths', () => {
+      const names = [
+        '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests/file1.js',
+        '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests/file2.js',
+        '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests/file3.js',
+      ];
+      assert.deepStrictEqual(
+        buildTree(names), 
+        {name: 'root', children: [
+          {name: '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests', children: []}
+        ]}
+      );
+    });
   });
 });
