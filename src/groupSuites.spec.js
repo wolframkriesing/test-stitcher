@@ -174,12 +174,28 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
 
 const uniques = arr => [...new Set(arr)];
 const buildTree = (names) => {
-  const dirs = uniques(names
-    .filter(name => name.includes('/'))
-    .map(name => name.split('/')[0])
-  );
-  const children = dirs.map(name => ({name, children: []}));
-  return {name: 'root', children};
+  const root = {name: 'root', children: []};
+  const isDirectory = name => name.includes('/');
+  const removeFilenames = name => name.split('/').slice(0, -1).join('/');
+  const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
+  const createdDirs = new Map();
+  const generateSuites = (dir, parent) => {
+    const subDirs = dir.split('/');
+    const firstLevelDir = subDirs[0];
+    if (!createdDirs.has(firstLevelDir)) {
+      createdDirs.set(firstLevelDir, {name: firstLevelDir, children: []});
+    }
+    parent.children.push(createdDirs.get(firstLevelDir));
+    if (subDirs.length > 1) {
+      generateSuites(subDirs.slice(1).join('/'), createdDirs.get(firstLevelDir));
+    }
+  };
+  dirNamesOnly.map(dir => {
+    if (!createdDirs.has(dir)) {
+      createdDirs.set(dir, generateSuites(dir, root));
+    }
+  });
+  return root;
 };
 describe('Build tree from directory names', () => {
   describe('one level deep', () => {
@@ -208,6 +224,33 @@ describe('Build tree from directory names', () => {
         {name: 'dir1', children: []},
         {name: 'dir2', children: []},
       ]);
+    });
+  });
+  describe('many levels deep', () => {
+    it('GIVEN dir1/dir2/file.js', () => {
+      const names = ['file.js', 'dir1/dir2/file1.js', 'dir1/dir2/file2.js'];
+      assert.deepStrictEqual(
+        buildTree(names), 
+        {name: 'root', children: [
+          {name: 'dir1', children: [
+            {name: 'dir2', children: []}            
+          ]}
+        ]}
+      );
+    });
+  });
+  describe('many levels but some empty', () => {
+    xit('GIVEN some URLs', () => {
+      const names = [
+        'http://st.itch/tests/1.js',
+        'http://st.itch/tests/2.js',
+      ];
+      assert.deepStrictEqual(
+        buildTree(names), 
+        {name: 'root', children: [
+          {name: 'http://st.itch/tests', children: []}
+        ]}
+      );
     });
   });
 });
