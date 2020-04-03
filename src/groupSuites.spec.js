@@ -34,6 +34,11 @@ const groupSuites = (suites) => {
       {name: '', suites: [cloneSuiteAndNameIt(suites[1])], tests: [], origin: 'dir2'},
     ];
     return groupSuites(dirSuites);
+  } else if (suites[0].origin.startsWith('dirX/')) {
+    const dirSuites = [
+      {name: '', suites: [cloneSuiteAndNameIt(suites[0])], tests: [], origin: 'dirX'},
+    ];
+    return groupSuites(dirSuites);
   } else {
     return {
       name: 'root',
@@ -103,6 +108,25 @@ describe('Group test suites from multiple files and produce one containing them 
       });
       it('AND the suites underneath', () => {
         const groupedSuite = groupSuites([suite1, suite2]);
+        const dir1Suites = groupedSuite.suites[0].suites;
+        const dir2Suites = groupedSuite.suites[1].suites;
+        assert.deepStrictEqual(dir1Suites[0].name, 'dir1/file.js');
+        assert.deepStrictEqual(dir2Suites[0].name, 'dir2/file.js');
+      });
+    });
+    describe('WHEN multiple suites are in multiple sub-directory multiple levels deep', () => {
+      const suite1 = {name: '', suites: [], tests: [], origin: 'dirX/dirY/file.js'};
+      it('THEN create a child-suites named like the directories', () => {
+        const groupedSuite = groupSuites([suite1]);
+        const childSuites = groupedSuite.suites;
+        assert.deepStrictEqual(childSuites[0].name, 'dirX');
+        assert.deepStrictEqual(childSuites[0].origin, 'dirX');
+        // assert.deepStrictEqual(childSuites[0], 'dirY');
+        // assert.deepStrictEqual(childSuites[0].suites[0].name, 'dirY');
+        // assert.deepStrictEqual(childSuites[0].suites[0].origin, 'dirY');
+      });
+      xit('AND the suites underneath', () => {
+        const groupedSuite = groupSuites([suite1]);
         const dir1Suites = groupedSuite.suites[0].suites;
         const dir2Suites = groupedSuite.suites[1].suites;
         assert.deepStrictEqual(dir1Suites[0].name, 'dir1/file.js');
