@@ -238,6 +238,28 @@ describe('Build tree from directory names', () => {
         ]}
       );
     });
+    it('GIVEN multiple dirs over many levels (just to make sure ;))', () => {
+      const names = [
+        'file.js', 
+        'dir1/dir2/file1.js', 'dir1/dir2/file2.js',
+        'dirA/dirB/dirC/dirD/file1.js',
+      ];
+      assert.deepStrictEqual(
+        buildTree(names), 
+        {name: 'root', children: [
+          {name: 'dir1', children: [
+            {name: 'dir2', children: []}            
+          ]},
+          {name: 'dirA', children: [
+            {name: 'dirB', children: [
+              {name: 'dirC', children: [
+                {name: 'dirD', children: []}
+              ]}
+            ]}            
+          ]},
+        ]}
+      );
+    });
   });
   describe('many levels but some empty', () => {
     xit('GIVEN some URLs', () => {
