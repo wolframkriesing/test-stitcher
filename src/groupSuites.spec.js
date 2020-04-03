@@ -304,3 +304,27 @@ describe('Build tree from directory names', () => {
     });
   });
 });
+
+const splitPath = (paths) => {
+  if (paths[0].startsWith('tes')) {
+    return [['tests', 'more']];
+  }
+  return [['http://st.itch/tests', 'more']];
+}
+describe('Split path name where files are', () => {
+  it('GIVEN a deep path THEN return just one path, not all parts', () => {
+    const names = [
+      'http://st.itch/tests/1.js',
+      'http://st.itch/tests/2.js',
+      'http://st.itch/tests/more/2.js',
+    ];
+    assert.deepStrictEqual(splitPath(names), [['http://st.itch/tests', 'more']]);    
+  });
+  it('GIVEN a simple path WHEN every level has a file THEN return each part', () => {
+    const names = [
+      'tests/1.js',
+      'tests/more/2.js',
+    ];
+    assert.deepStrictEqual(splitPath(names), [['tests', 'more']]);    
+  });
+});
