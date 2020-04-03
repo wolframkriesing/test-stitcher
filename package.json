@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha -r esm src/*spec.js",
     "parse-file": "node -r esm ./src/parseFile.js",
-    "dev:test": "npm run test -- --watch --bail",
+    "dev:test": "npm run test -- --watch --bail --watch-extensions=js",
     "typecheck": "tsc",
     "dev:typecheck": "npm run typecheck -- --watch"
   },
