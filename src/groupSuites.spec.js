@@ -179,20 +179,20 @@ const buildTree = (names) => {
   const removeFilenames = name => name.split('/').slice(0, -1).join('/');
   const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const createdDirs = new Map();
-  const generateSuites = (dir, parent) => {
+  const generateSuites = (dir, depth, parent) => {
     const subDirs = dir.split('/');
-    const firstLevelDir = subDirs[0];
+    const firstLevelDir = subDirs[depth];
     if (!createdDirs.has(firstLevelDir)) {
       createdDirs.set(firstLevelDir, {name: firstLevelDir, children: []});
     }
     parent.children.push(createdDirs.get(firstLevelDir));
     if (subDirs.length > 1) {
-      generateSuites(subDirs.slice(1).join('/'), createdDirs.get(firstLevelDir));
+      generateSuites(subDirs.slice(1).join('/'), 0, createdDirs.get(firstLevelDir));
     }
   };
   dirNamesOnly.map(dir => {
     if (!createdDirs.has(dir)) {
-      createdDirs.set(dir, generateSuites(dir, root));
+      createdDirs.set(dir, generateSuites(dir, 0, root));
     }
   });
   return root;
@@ -255,6 +255,21 @@ describe('Build tree from directory names', () => {
               {name: 'dirC', children: [
                 {name: 'dirD', children: []}
               ]}
+            ]}            
+          ]},
+        ]}
+      );
+    });
+    xit('GIVEN recurring dir names', () => {
+      const names = [
+        'dir1/dir1/dir1/file1.js'
+      ];
+      assert.deepStrictEqual(
+        buildTree(names), 
+        {name: 'root', children: [
+          {name: 'dir1', children: [
+            {name: 'dir1', children: [
+              {name: 'dir1', children: []}
             ]}            
           ]},
         ]}
