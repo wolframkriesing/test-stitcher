@@ -24,7 +24,7 @@ const groupSuites = (suites) => {
 
 describe('Group test suites from multiple files and produce one containing them all', () => {
   describe('GIVEN every file has a relative path (e.g. src/file1 and src/file2)', () => {
-    describe('WHEN given one file AND the suite has NO name ', () => {
+    describe('WHEN given one suite of one file AND the suite has NO name ', () => {
       const suite = {name: '', suites: [], tests: [], origin: 'file.js'};
       it('THEN return this one suite as child-suite, with the name "root"', () => {
         const groupedSuite = groupSuites([suite]);
@@ -50,6 +50,14 @@ describe('Group test suites from multiple files and produce one containing them 
         const groupedSuite = groupSuites([suite]);
         const childSuite = groupedSuite.suites[0];
         assert.deepStrictEqual(childSuite, suite);
+      });
+    });
+    describe('WHEN given suites of two files AND the suites have no name ', () => {
+      const suite1 = {name: '', suites: [], tests: [], origin: 'file1.js'};
+      const suite2 = {name: '', suites: [], tests: [], origin: 'file2.js'};
+      it('THEN return this one suite with original suite name', () => {
+        // const groupedSuite = groupSuites([suite]);
+        // assert.deepStrictEqual(groupedSuite, suite);
       });
     });
   });
