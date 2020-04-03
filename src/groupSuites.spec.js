@@ -174,15 +174,15 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
 
 const buildTree = (names) => {
   const createdDirs = new Map();
-  const buildDirTree = (subDirs, depth, parent) => {
-    const curDirName = subDirs[depth];
-    const curFullDir = subDirs.slice(0, depth + 1).join('/');
+  const buildDirTree = (dirNames, depth, parent) => {
+    const curDirName = dirNames[depth];
+    const curFullDir = dirNames.slice(0, depth + 1).join('/');
     if (!createdDirs.has(curFullDir)) {
       createdDirs.set(curFullDir, {name: curDirName, children: []});
     }
     parent.children.push(createdDirs.get(curFullDir));
-    if (subDirs.length > depth + 1) {
-      buildDirTree(subDirs, depth + 1, createdDirs.get(curFullDir));
+    if (dirNames.length > depth + 1) {
+      buildDirTree(dirNames, depth + 1, createdDirs.get(curFullDir));
     }
   };
   
