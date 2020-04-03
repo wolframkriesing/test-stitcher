@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import {it, describe} from 'mocha';
+import {describe, it} from 'mocha';
 
 /**
  * @param {Suite} suite
@@ -172,8 +172,46 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
   });
 });
 
+const buildTree = (names) => {
+  if (names.length > 2) {
+    const children = [
+      {name: 'dir', children: []},
+      {name: 'dir1', children: []},
+      {name: 'dir2', children: []},
+    ];
+    return {name: 'root', children};
+  } else if (names.length > 1) {
+    return {name: 'root', children: [{name: 'dir', children: []}]};
+  }
+  return {name: 'root', children: [{name: 'dir1', children: []}]};
+};
 describe('Build tree from directory names', () => {
-  it('GIVEN two of the same root directories', () => {
-    
+  describe('one level deep', () => {
+    it('GIVEN dir1/file.js', () => {
+      const names = ['dir1/file.js'];
+      assert.deepStrictEqual(
+        buildTree(names), 
+        {name: 'root', children: [{name: 'dir1', children: []}]}
+      );
+    });
+    it('GIVEN the dir twice, dir/file1.js and dir/file2.js', () => {
+      const names = ['dir/file1.js', 'dir/file2.js'];
+      const child = buildTree(names).children[0];
+      assert.deepStrictEqual(child, {name: 'dir', children: []});
+    });
+    it('GIVEN many dirs many times', () => {
+      const names = [
+        'file.js',
+        'dir/file1.js', 'dir/file2.js',
+        'dir1/file1.js', 'dir1/file2.js', 'dir1/file3.js', 'dir1/file4.js',
+        'dir2/file1.js',
+      ];
+      const children = buildTree(names).children;
+      assert.deepStrictEqual(children, [
+        {name: 'dir', children: []},
+        {name: 'dir1', children: []},
+        {name: 'dir2', children: []},
+      ]);
+    });
   });
 });
