@@ -310,19 +310,16 @@ const splitPath = (paths) => {
   const removeFilenames = name => name.split('/').slice(0, -1).join('/');
   const uniques = arr => [...new Set(arr)];
   const dirNamesOnly = uniques(paths.filter(isDirectory).map(removeFilenames)).sort();
-  const prefix = dirNamesOnly[0];
-  const allWithPrefix = dirNamesOnly.filter(name => name.startsWith(`${prefix}/`));
-  const resultPaths = allWithPrefix.map(name => name.replace(`${prefix}/`, ''));
-  if (dirNamesOnly.length > 1 + allWithPrefix.length) {
-    const nextPrefix = dirNamesOnly[1 + allWithPrefix.length];
-    const allWithNextPrefix = dirNamesOnly.filter(name => name.startsWith(`${nextPrefix}/`));
-    const nextResultPaths = allWithNextPrefix.map(name => name.replace(`${nextPrefix}/`, ''));
-    return [
-      [prefix, ...resultPaths.map(name => name.split('/')).flat()],
-      [nextPrefix, ...nextResultPaths.map(name => name.split('/')).flat()],
-    ];
+  const result = [];
+  let pathsToProcess = [...dirNamesOnly];
+  while (pathsToProcess.length > 0) {
+    const prefix = pathsToProcess[0];
+    const allWithPrefix = pathsToProcess.filter(name => name.startsWith(`${prefix}/`));
+    pathsToProcess = pathsToProcess.slice(1 + allWithPrefix.length);
+    const resultPaths = allWithPrefix.map(name => name.replace(`${prefix}/`, ''));
+    result.push([prefix, ...resultPaths.map(name => name.split('/')).flat()]);
   }
-  return [[prefix, ...resultPaths.map(name => name.split('/')).flat()]];
+  return result;
 }
 describe('Split path name where files are', () => {
   it('GIVEN a deep path THEN return just one path, not all parts', () => {
@@ -353,9 +350,10 @@ describe('Split path name where files are', () => {
       'fast/more/more1/1.js',
       'slow/1.js',
       'slow/more/more1/1.js',
+      'http://slow/more/more1/1.js',
     ];
     assert.deepStrictEqual(splitPath(names), [
-      ['fast', 'more', 'more1'], ['slow', 'more', 'more1']
+      ['fast', 'more', 'more1'], ['http://slow/more/more1'], ['slow', 'more', 'more1'],
     ]);    
   });
 });
