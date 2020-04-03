@@ -310,9 +310,10 @@ const splitPath = (paths) => {
   const removeFilenames = name => name.split('/').slice(0, -1).join('/');
   const uniques = arr => [...new Set(arr)];
   const dirNamesOnly = uniques(paths.filter(isDirectory).map(removeFilenames)).sort();
-  if (dirNamesOnly[1].startsWith(dirNamesOnly[0])) {
-    return [[dirNamesOnly[0], dirNamesOnly[1].replace(dirNamesOnly[0]+'/', '')]]
-  }
+  const prefix = dirNamesOnly[0];
+  const allWithPrefix = dirNamesOnly.filter(name => name.startsWith(`${prefix}/`));
+  const resultPaths = allWithPrefix.map(name => name.replace(`${prefix}/`, ''));
+  return [[prefix, ...resultPaths.map(name => name.split('/')).flat()]];
 }
 describe('Split path name where files are', () => {
   it('GIVEN a deep path THEN return just one path, not all parts', () => {
@@ -329,5 +330,12 @@ describe('Split path name where files are', () => {
       'tests/more/2.js',
     ];
     assert.deepStrictEqual(splitPath(names), [['tests', 'more']]);    
+  });
+  it('GIVEN a simple path THEN every level is returned', () => {
+    const names = [
+      'tests/1.js',
+      'tests/more/more1/1.js',
+    ];
+    assert.deepStrictEqual(splitPath(names), [['tests', 'more', 'more1']]);    
   });
 });
