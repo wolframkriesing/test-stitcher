@@ -210,12 +210,15 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
       {name: '', suites: [], tests: [], origin: 'dir1/dir2/file.js'},
       {name: '', suites: [], tests: [], origin: 'dirA/dirB/file.js'},
       {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC/file.js'},
+      {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC1/file.js'},
     ];
     const tree = generateSuiteTree(suites);
     assert.strictEqual(tree.name, 'root');
     assert.strictEqual(tree.suites[0].name, 'dir1');
     assert.strictEqual(tree.suites[0].suites[0].name, 'dir2');
     assert.strictEqual(tree.suites[1].name, 'dirA/dirB');
+    assert.strictEqual(tree.suites[1].suites[0].name, 'dirC');
+    assert.strictEqual(tree.suites[1].suites[1].name, 'dirC1');
   });
 });
 
