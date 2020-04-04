@@ -167,17 +167,16 @@ describe('Group test suites from multiple files and produce one containing them 
 
 const newSuite = name => ({name, suites: [], tests: [], origin: name});
 const generateSuiteTree = (suites) => {
+  const origins = suites.map(suite => suite.origin);
+  const tree = buildPathnamesTree(origins);
   const subSuites = [];
   if (suites[0].origin.startsWith('dir1/') && suites[1].origin.startsWith('dir1/dir2')) {
     const subsub = newSuite('dir1');
     subsub.suites.push(newSuite('dir2'));
     subSuites.push(subsub);
   } else if (suites[1].origin.startsWith('dir1/dir2')) {
-    const subsub = newSuite('dir1/dir2');
-    subSuites.push(subsub);
+    subSuites.push(newSuite(tree.children[0].name));
   } else {
-    const origins = suites.map(suite => suite.origin);
-    const tree = buildPathnamesTree(origins);
     subSuites.push(newSuite(tree.children[0].name));
   }
   const rootSuite = newSuite('root');
