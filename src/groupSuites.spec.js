@@ -220,6 +220,24 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
     assert.strictEqual(tree.suites[1].suites[0].name, 'dirC');
     assert.strictEqual(tree.suites[1].suites[1].name, 'dirC1');
   });
+  it('GIVEN various levels AND multiple files, URLs THEN render right ;)', () => {
+    const suites = [
+      {name: '', suites: [], tests: [], origin: 'file.js'},
+      {name: '', suites: [], tests: [], origin: 'dir1/dir2/file.js'},
+      {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC/file.js'},
+      {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC/dirD/file.js'},
+      {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC1/file.js'},
+      {name: '', suites: [], tests: [], origin: 'http://x.de/1/2/3/a.js'},
+      {name: '', suites: [], tests: [], origin: 'http://x.de/1/2/3/b.js'},
+    ];
+    const tree = generateSuiteTree(suites);
+    assert.strictEqual(tree.name, 'root');
+    assert.strictEqual(tree.suites[0].name, 'dir1/dir2');
+    assert.strictEqual(tree.suites[1].name, 'dirA/dirB/dirC');
+    assert.strictEqual(tree.suites[1].suites[0].name, 'dirD');
+    assert.strictEqual(tree.suites[2].name, 'dirA/dirB/dirC1');
+    assert.strictEqual(tree.suites[3].name, 'http://x.de/1/2/3');
+  });
 });
 
 const buildPathnamesTree = (filenamesWithPath) => {
