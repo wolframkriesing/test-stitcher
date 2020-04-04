@@ -353,7 +353,18 @@ const findRoots = (files) => {
   return x;
 }
 
-const splitOutPathnames = () => [];
+const splitOutPathnames = (files) => {
+  const roots = findRoots(files);
+  const pathnames = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
+  const findRoot = n => roots.filter(r => n.startsWith(r))[0];
+  return pathnames
+    .map(path => ({root: findRoot(path), path}))
+    .map(name => {
+      if (name.root === name.path) return [name.root];
+      return [name.root, ...name.path.replace(name.root + '/', '').split('/')]
+    })
+  ;
+};
 
 describe.only('Split a set of file names for building a suites tree structure', () => {
   describe('HELPER tests: find roots', () => {
@@ -432,6 +443,53 @@ describe.only('Split a set of file names for building a suites tree structure', 
           'http://pico.stitch', 'http://site.stitch/test/1/2/3',
         ]);
       });
+    });
+  });
+  describe('GIVEN a list of file names, local filesystem or URLs, or mixed', () => {
+    describe('WHEN local relative files are given', () => {
+      it('AND one file THEN return no path names', () => {
+        const files = ['1.js'];
+        assert.deepStrictEqual(splitOutPathnames(files), []);
+      });
+      it('AND many files THEN return no path names', () => {
+        const files = ['1.js', '2.js'];
+        assert.deepStrictEqual(splitOutPathnames(files), []);
+      });
+      it('AND dirs one level deep THEN return that path name', () => {
+        const files = ['1/2.js', '3/4.js'];
+        assert.deepStrictEqual(splitOutPathnames(files), [['1'], ['3']]);
+      });
+      it('AND dirs many levels deep THEN return that path names', () => {
+        const files = ['0/1/2/3/4.js', '0/1/2.js', '0/1/2/3.js'];
+        assert.deepStrictEqual(splitOutPathnames(files), [
+          ['0/1'],
+          ['0/1', '2'],
+          ['0/1', '2', '3'],
+        ]);
+      });
+      it('AND many files on one level THEN return each path name once', () => {
+        const files = [
+          'a/b/c/e.js', 'a/b/c/d/f.js', 'a/b/c/d/g.js', 
+          '1/2.js',
+        ];
+        assert.deepStrictEqual(splitOutPathnames(files), [
+          ['1'],
+          ['a/b/c'],
+          ['a/b/c', 'd'],
+        ]);
+      });
+    });
+    describe('WHEN local absolute files are given', () => {
+      
+    });
+    describe('WHEN local relative+absolute files are given', () => {
+      
+    });
+    describe('WHEN URLs are given', () => {
+      
+    });
+    describe('WHEN URLs, local and absolute files are given', () => {
+      
     });
   });
 });
