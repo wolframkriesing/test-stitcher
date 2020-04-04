@@ -176,7 +176,11 @@ const generateSuiteTree = (suites) => {
     const subsub = newSuite('dir1/dir2');
     subSuites.push(subsub);
   } else {
-    subSuites.push(newSuite('dir'));
+    const origins = suites.map(suite => suite.origin);
+    const tree = buildPathnamesTree(origins);
+    const rootSuite = newSuite('root');
+    rootSuite.suites.push(newSuite(tree.children[0].name));
+    return rootSuite
   }
   return {
     name: 'root',
@@ -192,7 +196,7 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
     const suite2 = {name: '', suites: [], tests: [], origin: 'dir1/file.js'};
     const tree = generateSuiteTree([suite1, suite2]);
     assert.strictEqual(tree.name, 'root');
-    assert.strictEqual(tree.suites[0].name, 'dir');
+    assert.strictEqual(tree.suites[0].name, 'dir1');
   });
   it('GIVEN two levels deep WHEN a file is only at the end THEN render just one child suite', () => {
     const suite1 = {name: '', suites: [], tests: [], origin: 'file.js'};
@@ -211,7 +215,7 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
   });
 });
 
-const buildTree = (names) => {
+const buildPathnamesTree = (filenamesWithPath) => {
   const createdDirs = new Map();
   const buildDirTree = (dirNames, depth, parent) => {
     const curDirName = dirNames[depth];
@@ -225,7 +229,7 @@ const buildTree = (names) => {
     }
   };
   const root = {name: 'root', children: []};
-  splitPaths(names).forEach(dir => { buildDirTree(dir, 0, root); });
+  splitOutPathnames(filenamesWithPath).forEach(dir => { buildDirTree(dir, 0, root); });
   return root;
 };
 describe('Build tree from directory names', () => {
@@ -233,13 +237,13 @@ describe('Build tree from directory names', () => {
     it('GIVEN dir1/file.js THEN return one child, the "dir1"', () => {
       const names = ['dir1/file.js'];
       assert.deepStrictEqual(
-        buildTree(names), 
+        buildPathnamesTree(names), 
         {name: 'root', children: [{name: 'dir1', children: []}]}
       );
     });
     it('GIVEN the dir twice, dir/file1.js and dir/file2.js THEN return one child, the "dir"', () => {
       const names = ['dir/file1.js', 'dir/file2.js'];
-      const child = buildTree(names).children[0];
+      const child = buildPathnamesTree(names).children[0];
       assert.deepStrictEqual(child, {name: 'dir', children: []});
     });
     it('GIVEN many dirs many times THEN return each ONCE', () => {
@@ -249,7 +253,7 @@ describe('Build tree from directory names', () => {
         'dir1/file1.js', 'dir1/file2.js', 'dir1/file3.js', 'dir1/file4.js',
         'dir2/file1.js',
       ];
-      const children = buildTree(names).children;
+      const children = buildPathnamesTree(names).children;
       assert.deepStrictEqual(children, [
         {name: 'dir', children: []},
         {name: 'dir1', children: []},
@@ -261,7 +265,7 @@ describe('Build tree from directory names', () => {
     it('GIVEN dir1/dir2/file.js THEN return one child "dir1/dir2" (we dont want to have empty dirs at the top of the hierarchy)', () => {
       const names = ['file.js', 'dir1/dir2/file1.js', 'dir1/dir2/file2.js'];
       assert.deepStrictEqual(
-        buildTree(names), 
+        buildPathnamesTree(names), 
         {name: 'root', children: [
           {name: 'dir1/dir2', children: []}
         ]}
@@ -275,7 +279,7 @@ describe('Build tree from directory names', () => {
         'dirA/dirB/dirC/dirD/file1.js',
       ];
       assert.deepStrictEqual(
-        buildTree(names), 
+        buildPathnamesTree(names), 
         {name: 'root', children: [
           {name: 'dir1/dir2', children: []},
           {name: 'dirA/dirB', children: [
@@ -291,7 +295,7 @@ describe('Build tree from directory names', () => {
         'dir1/dir1/dir1/file1.js'
       ];
       assert.deepStrictEqual(
-        buildTree(names), 
+        buildPathnamesTree(names), 
         {name: 'root', children: [
           {name: 'dir1/dir1/dir1', children: []},
         ]}
@@ -305,7 +309,7 @@ describe('Build tree from directory names', () => {
         'http://st.itch/tests/2.js',
       ];
       assert.deepStrictEqual(
-        buildTree(names), 
+        buildPathnamesTree(names), 
         {name: 'root', children: [
           {name: 'http://st.itch/tests', children: []}
         ]}
@@ -318,7 +322,7 @@ describe('Build tree from directory names', () => {
         '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests/file3.js',
       ];
       assert.deepStrictEqual(
-        buildTree(names), 
+        buildPathnamesTree(names), 
         {name: 'root', children: [
           {name: '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests', children: []}
         ]}
@@ -327,11 +331,11 @@ describe('Build tree from directory names', () => {
   });
 });
 
-const splitPaths = (paths) => {
+const splitOutPathnames = (filenamesWithPath) => {
   const isDirectory = name => name.includes('/');
   const removeFilenames = name => name.split('/').slice(0, -1).join('/');
   const uniques = arr => [...new Set(arr)];
-  const dirNamesOnly = uniques(paths.filter(isDirectory).map(removeFilenames)).sort();
+  const dirNamesOnly = uniques(filenamesWithPath.filter(isDirectory).map(removeFilenames)).sort();
   const result = [];
   let pathsToProcess = [...dirNamesOnly];
   while (pathsToProcess.length > 0) {
@@ -350,21 +354,21 @@ describe('Split path names where files are under', () => {
       'http://st.itch/tests/1.js',
       'http://st.itch/tests/2.js',
     ];
-    assert.deepStrictEqual(splitPaths(names), [['http://st.itch/tests', 'more']]);    
+    assert.deepStrictEqual(splitOutPathnames(names), [['http://st.itch/tests', 'more']]);    
   });
   it('GIVEN a simple path WHEN every level has a file THEN return each part', () => {
     const names = [
       'tests/1.js',
       'tests/more/2.js',
     ];
-    assert.deepStrictEqual(splitPaths(names), [['tests', 'more']]);    
+    assert.deepStrictEqual(splitOutPathnames(names), [['tests', 'more']]);    
   });
   it('GIVEN a simple path with a file at the root THEN return every level', () => {
     const names = [
       'tests/1.js',
       'tests/more/more1/1.js',
     ];
-    assert.deepStrictEqual(splitPaths(names), [['tests', 'more', 'more1']]);    
+    assert.deepStrictEqual(splitOutPathnames(names), [['tests', 'more', 'more1']]);    
   });
   it('GIVEN many paths THEN every level is returned', () => {
     const names = [
@@ -374,7 +378,7 @@ describe('Split path names where files are under', () => {
       'slow/more/more1/1.js',
       'http://slow/more/more1/1.js',
     ];
-    assert.deepStrictEqual(splitPaths(names), [
+    assert.deepStrictEqual(splitOutPathnames(names), [
       ['fast', 'more', 'more1'], ['http://slow/more/more1'], ['slow', 'more', 'more1'],
     ]);    
   });
