@@ -174,8 +174,6 @@ const generateSuiteTree = (suites) => {
     const subsub = newSuite('dir1');
     subsub.suites.push(newSuite('dir2'));
     subSuites.push(subsub);
-  } else if (suites[1].origin.startsWith('dir1/dir2')) {
-    subSuites.push(newSuite(tree.children[0].name));
   } else {
     subSuites.push(newSuite(tree.children[0].name));
   }
