@@ -400,6 +400,20 @@ describe.only('Split a set of file names for building a suites tree structure', 
         const files = ['a/b/c/1.js', 'c/1.js'];
         assert.deepStrictEqual(findRoots(files), ['a/b/c', 'c']);
       });
+      it('GIVEN a mix of it all', () => {
+        const files = [
+          'one-level/1.js',
+          'one-level/2.js',
+          'one/two/three/four/2.js',
+          '1/2/3/4/5/6/7.js',
+          '1/2.js'
+        ];
+        assert.deepStrictEqual(findRoots(files), [
+          '1',
+          'one-level',
+          'one/two/three/four',
+        ]);
+      });
     });
   });
-});
+});});
