@@ -187,15 +187,8 @@ const buildTree = (names) => {
       buildDirTree(dirNames, depth + 1, createdDirs.get(curFullDir));
     }
   };
-  
-  const isDirectory = name => name.includes('/');
-  const removeFilenames = name => name.split('/').slice(0, -1).join('/');
-  const uniques = arr => [...new Set(arr)];
-  const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const root = {name: 'root', children: []};
-  splitPaths(names)
-    .forEach(dir => { buildDirTree(dir, 0, root); })
-  ;
+  splitPaths(names).forEach(dir => { buildDirTree(dir, 0, root); });
   return root;
 };
 describe('Build tree from directory names', () => {
