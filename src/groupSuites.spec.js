@@ -171,9 +171,13 @@ const generateSuiteTree = (suites) => {
   const tree = buildPathnamesTree(origins);
   const subSuites = [];
   if (suites[0].origin.startsWith('dir1/') && suites[1].origin.startsWith('dir1/dir2')) {
-    const subsub = newSuite(tree.children[0].name);
-    subsub.suites.push(newSuite(tree.children[0].children[0].name));
-    subSuites.push(subsub);
+    const createChildSuites = (tree, parent) => {
+      parent.push(newSuite(tree.children[0].name));
+    }
+    const root = newSuite('root');
+    createChildSuites(tree, root.suites);
+    createChildSuites(tree.children[0], root.suites[0].suites);
+    return root;
   } else {
     subSuites.push(newSuite(tree.children[0].name));
   }
