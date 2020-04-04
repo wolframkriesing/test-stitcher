@@ -177,7 +177,7 @@ const generateSuiteTree = (suites) => {
     return suite;
   }
   const root = newSuite('root');
-  root.suites.push(createChildSuite(tree.children[0]));
+  root.suites = tree.children.map(child => createChildSuite(child));
   return root;
 };
 
@@ -204,7 +204,7 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
     assert.strictEqual(tree.suites[0].name, 'dir1');
     assert.strictEqual(tree.suites[0].suites[0].name, 'dir2');
   });
-  xit('GIVEN various levels AND multiple files THEN render right ;)', () => {
+  it('GIVEN various levels AND multiple files THEN render right ;)', () => {
     const suites = [
       {name: '', suites: [], tests: [], origin: 'dir1/file.js'},
       {name: '', suites: [], tests: [], origin: 'dir1/dir2/file.js'},
