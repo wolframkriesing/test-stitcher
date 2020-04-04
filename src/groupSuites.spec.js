@@ -53,20 +53,22 @@ describe('Group test suites from multiple files and produce one containing them 
   describe('GIVEN every file has a relative path (e.g. src/file1 and src/file2)', () => {
     describe('WHEN given one suite of one file', () => {
       const suite = {name: '', suites: [], tests: [], origin: 'file.js'};
-      it('THEN return this one suite as child-suite, with the name "root"', () => {
+      it('THEN return this one suite as child-suite AND with the name "root"', () => {
         const groupedSuite = groupSuites([suite]);
-        assert.strictEqual(groupedSuite.name, 'root');
         assert.strictEqual(groupedSuite.suites.length, 1);
+        assert.strictEqual(groupedSuite.name, 'root');
       });
-      it('AND return the grouped suite with filename as suite name', () => {
+      it('THEN return the grouped suite AND filename as suite name', () => {
         const groupedSuite = groupSuites([suite]);
         const childSuite = groupedSuite.suites[0];
-        assert.strictEqual(childSuite.name, suite.origin);
-        assert.deepStrictEqual(childSuite.suites, suite.suites);
-        assert.deepStrictEqual(childSuite.tests, suite.tests);
-        assert.strictEqual(childSuite.origin, suite.origin);
+        assert.deepStrictEqual(childSuite, {
+          name: suite.origin,
+          suites: suite.suites,
+          tests: suite.tests,
+          origin: suite.origin,
+        });
       });
-      it('AND the suite must be cloned', () => {
+      it('THEN the suite must be cloned', () => {
         const groupedSuite = groupSuites([suite]);
         assert.notStrictEqual(groupedSuite.suites[0], suite);
       });
