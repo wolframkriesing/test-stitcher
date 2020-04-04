@@ -191,8 +191,7 @@ const buildTree = (names) => {
   const uniques = arr => [...new Set(arr)];
   const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const root = {name: 'root', children: []};
-  dirNamesOnly
-    .map(name => name.split('/'))
+  splitPath(names)
     .forEach(dir => { buildDirTree(dir, 0, root); })
   ;
   return root;
@@ -232,9 +231,7 @@ describe('Build tree from directory names', () => {
       assert.deepStrictEqual(
         buildTree(names), 
         {name: 'root', children: [
-          {name: 'dir1', children: [
-            {name: 'dir2', children: []}            
-          ]}
+          {name: 'dir1/dir2', children: []}
         ]}
       );
     });
@@ -242,20 +239,17 @@ describe('Build tree from directory names', () => {
       const names = [
         'file.js', 
         'dir1/dir2/file1.js', 'dir1/dir2/file2.js',
+        'dirA/dirB/file1.js',
         'dirA/dirB/dirC/dirD/file1.js',
       ];
       assert.deepStrictEqual(
         buildTree(names), 
         {name: 'root', children: [
-          {name: 'dir1', children: [
-            {name: 'dir2', children: []}            
-          ]},
-          {name: 'dirA', children: [
-            {name: 'dirB', children: [
+          {name: 'dir1/dir2', children: []},
+          {name: 'dirA/dirB', children: [
               {name: 'dirC', children: [
                 {name: 'dirD', children: []}
               ]}
-            ]}            
           ]},
         ]}
       );
@@ -267,11 +261,7 @@ describe('Build tree from directory names', () => {
       assert.deepStrictEqual(
         buildTree(names), 
         {name: 'root', children: [
-          {name: 'dir1', children: [
-            {name: 'dir1', children: [
-              {name: 'dir1', children: []}
-            ]}            
-          ]},
+          {name: 'dir1/dir1/dir1', children: []},
         ]}
       );
     });
