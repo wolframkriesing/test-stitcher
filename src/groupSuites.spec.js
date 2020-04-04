@@ -356,7 +356,7 @@ const findRoots = (files) => {
 const splitOutPathnames = (files) => {
   const roots = findRoots(files);
   const pathnames = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
-  const findRoot = n => roots.filter(r => n.startsWith(r))[0];
+  const findRoot = n => roots.filter(r => n.startsWith(r + '/') || r === n)[0];
   return pathnames
     .map(path => ({root: findRoot(path), path}))
     .map(name => {
@@ -366,7 +366,7 @@ const splitOutPathnames = (files) => {
   ;
 };
 
-describe.only('Split a set of file names for building a suites tree structure', () => {
+describe('Split a set of file names for building a suites tree structure', () => {
   describe('HELPER tests: find roots', () => {
     describe('just files', () => {
       it('GIVEN a file at the root THEN return no path names', () => {
@@ -476,6 +476,19 @@ describe.only('Split a set of file names for building a suites tree structure', 
           ['1'],
           ['a/b/c'],
           ['a/b/c', 'd'],
+        ]);
+      });
+      it('AND overlapping names (dir, dir1) THEN returns them separately', () => {
+        const names = [
+          'file.js',
+          'dir/file1.js', 'dir/file2.js',
+          'dir1/file1.js', 'dir1/file2.js', 'dir1/file3.js', 'dir1/file4.js',
+          'dir2/file1.js',
+        ];
+        assert.deepStrictEqual(splitOutPathnames(names), [
+          ['dir'],
+          ['dir1'],
+          ['dir2'],
         ]);
       });
     });
