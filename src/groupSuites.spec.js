@@ -169,14 +169,18 @@ const newSuite = name => ({name, suites: [], tests: [], origin: name});
 const generateSuiteTree = (suites) => {
   const origins = suites.map(suite => suite.origin);
   const tree = buildPathnamesTree(origins);
+console.log("tree= ", tree);  
   const subSuites = [];
   if (suites[0].origin.startsWith('dir1/') && suites[1].origin.startsWith('dir1/dir2')) {
-    const createChildSuites = (tree, parent) => {
-      parent.push(newSuite(tree.children[0].name));
+    const createChildSuites = (leaf) => {
+      const suites = [newSuite(leaf.name)];
+      if (leaf.children.length > 0) {
+        suites[0].suites = createChildSuites(leaf.children[0]);
+      }
+      return suites;
     }
     const root = newSuite('root');
-    createChildSuites(tree, root.suites);
-    createChildSuites(tree.children[0], root.suites[0].suites);
+    root.suites = createChildSuites(tree.children[0]);
     return root;
   } else {
     subSuites.push(newSuite(tree.children[0].name));
