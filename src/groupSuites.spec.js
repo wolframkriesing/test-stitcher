@@ -191,7 +191,7 @@ const buildTree = (names) => {
   const uniques = arr => [...new Set(arr)];
   const dirNamesOnly = uniques(names.filter(isDirectory).map(removeFilenames));
   const root = {name: 'root', children: []};
-  splitPath(names)
+  splitPaths(names)
     .forEach(dir => { buildDirTree(dir, 0, root); })
   ;
   return root;
@@ -295,7 +295,7 @@ describe('Build tree from directory names', () => {
   });
 });
 
-const splitPath = (paths) => {
+const splitPaths = (paths) => {
   const isDirectory = name => name.includes('/');
   const removeFilenames = name => name.split('/').slice(0, -1).join('/');
   const uniques = arr => [...new Set(arr)];
@@ -318,21 +318,21 @@ describe('Split path name where files are', () => {
       'http://st.itch/tests/1.js',
       'http://st.itch/tests/2.js',
     ];
-    assert.deepStrictEqual(splitPath(names), [['http://st.itch/tests', 'more']]);    
+    assert.deepStrictEqual(splitPaths(names), [['http://st.itch/tests', 'more']]);    
   });
   it('GIVEN a simple path WHEN every level has a file THEN return each part', () => {
     const names = [
       'tests/1.js',
       'tests/more/2.js',
     ];
-    assert.deepStrictEqual(splitPath(names), [['tests', 'more']]);    
+    assert.deepStrictEqual(splitPaths(names), [['tests', 'more']]);    
   });
   it('GIVEN a simple path THEN every level is returned', () => {
     const names = [
       'tests/1.js',
       'tests/more/more1/1.js',
     ];
-    assert.deepStrictEqual(splitPath(names), [['tests', 'more', 'more1']]);    
+    assert.deepStrictEqual(splitPaths(names), [['tests', 'more', 'more1']]);    
   });
   it('GIVEN many paths THEN every level is returned', () => {
     const names = [
@@ -342,7 +342,7 @@ describe('Split path name where files are', () => {
       'slow/more/more1/1.js',
       'http://slow/more/more1/1.js',
     ];
-    assert.deepStrictEqual(splitPath(names), [
+    assert.deepStrictEqual(splitPaths(names), [
       ['fast', 'more', 'more1'], ['http://slow/more/more1'], ['slow', 'more', 'more1'],
     ]);    
   });
