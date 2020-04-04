@@ -338,7 +338,7 @@ describe('Build tree from directory names', () => {
   });
 });
 
-const splitOutPathnames = () => [];const splitOutPathnames = () => [];
+const splitOutPathnames = () => [];
 
 describe.only('Split a set of file names for building a suites tree structure', () => {
   /*
@@ -353,7 +353,14 @@ describe.only('Split a set of file names for building a suites tree structure', 
       const removeFilenames = f => f.split('/').slice(0, -1).join('/');
       const removeEmptyStrings = f => f.trim() !== '';
       const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
-      return dirs;
+      const isSubDir = name => dirs.some(dir => name.startsWith(`${dir}/`));
+      const x = dirs
+        .map(d => ({value: d, isRoot: true}))
+        .map(d => isSubDir(d.value) ? {...d, isRoot: false} : d)
+        .filter(d => d.isRoot)
+        .map(d => d.value)
+      ;
+      return x;
     }
     describe('just files', () => {
       it('GIVEN a file at the root THEN return no path names', () => {
@@ -382,6 +389,16 @@ describe.only('Split a set of file names for building a suites tree structure', 
         assert.deepStrictEqual(findRoots(['b/1.js', 'a/1.js']), ['a', 'b']);
         assert.deepStrictEqual(findRoots(['a/1.js', '1/1.js']), ['1', 'a']);
         assert.deepStrictEqual(findRoots(['bCd/1.js', 'aCd/1.js']), ['aCd', 'bCd']);
+      });
+    });
+    describe('multiple levels deep', () => {
+      it('GIVEN a file in every dir THEN return the root only', () => {
+        const files = ['a/b/1.js', 'a/1.js'];
+        assert.deepStrictEqual(findRoots(files), ['a']);
+      });
+      it('GIVEN a file in the 3rd level dir THEN return the root as a/b/c', () => {
+        const files = ['a/b/c/1.js', 'c/1.js'];
+        assert.deepStrictEqual(findRoots(files), ['a/b/c', 'c']);
       });
     });
   });
