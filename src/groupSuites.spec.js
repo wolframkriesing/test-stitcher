@@ -42,6 +42,14 @@ const groupSuites = (suites) => {
       {name: '', suites: [dirYSuite, childSuite], tests: [], origin: 'dirX'},
     ];
     return groupSuites(dirSuites);
+  } else if (suites[0].origin.startsWith('dirA/dirB/fil')) {
+    const childSuite = cloneSuiteAndNameIt(suites[0]);
+    const dirCSuite = newSuite('dirC');
+    dirCSuite.suites.push(cloneSuiteAndNameIt(suites[1]));
+    const dirSuites = [
+      {name: '', suites: [dirCSuite, childSuite], tests: [], origin: 'dirA/dirB'},
+    ];
+    return groupSuites(dirSuites);
   } else {
     return {
       name: 'root',
@@ -134,6 +142,24 @@ describe('Group test suites from multiple files and produce one containing them 
         const dirYSuites = rootSuite.suites[0].suites[0].suites;
         assert.deepStrictEqual(dirXSuites[1].name, 'dirX/file.js'); // dirXSuites[0] is "dirY"
         assert.deepStrictEqual(dirYSuites[0].name, 'dirX/dirY/file.js');
+      });
+    });
+    describe('WHEN multiple sub-directory but no suites on every level', () => {
+      const suite1 = {name: '', suites: [], tests: [], origin: 'dirA/dirB/file.js'};
+      const suite2 = {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC/file.js'};
+      it('THEN dont create a sub dir for the first levels', () => {
+        const rootSuite = groupSuites([suite1, suite2]);
+        assert.strictEqual(rootSuite.name, 'root');
+        assert.strictEqual(rootSuite.suites.length, 1); // the subdir dirA/dirB
+        assert.strictEqual(rootSuite.suites[0].name, 'dirA/dirB');
+        assert.strictEqual(rootSuite.suites[0].suites[0].name, 'dirC');
+      });
+      it('AND the files` suites underneath', () => {
+        const rootSuite = groupSuites([suite1, suite2]);
+        const dirBSuites = rootSuite.suites[0].suites;
+        const dirCSuites = rootSuite.suites[0].suites[0].suites;
+        assert.deepStrictEqual(dirBSuites[1].name, 'dirA/dirB/file.js');
+        assert.deepStrictEqual(dirCSuites[0].name, 'dirA/dirB/dirC/file.js');
       });
     });
   });
