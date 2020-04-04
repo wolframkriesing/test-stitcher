@@ -172,7 +172,7 @@ const generateSuiteTree = (suites) => {
   const createChildSuite = (leaf) => {
     const suite = newSuite(leaf.name);
     if (leaf.children.length > 0) {
-      suite.suites.push(createChildSuite(leaf.children[0]));
+      suite.suites = leaf.children.map(child => createChildSuite(child));
     }
     return suite;
   }
@@ -229,8 +229,8 @@ const buildPathnamesTree = (filenamesWithPath) => {
     const curFullDir = dirNames.slice(0, depth + 1).join('/');
     if (!createdDirs.has(curFullDir)) {
       createdDirs.set(curFullDir, {name: curDirName, children: []});
+      parent.children.push(createdDirs.get(curFullDir));
     }
-    parent.children.push(createdDirs.get(curFullDir));
     if (dirNames.length > depth + 1) {
       buildDirTree(dirNames, depth + 1, createdDirs.get(curFullDir));
     }
@@ -286,13 +286,32 @@ describe('Build tree from directory names', () => {
         'dirA/dirB/dirC/dirD/file1.js',
       ];
       assert.deepStrictEqual(
-        buildPathnamesTree(names), 
+        buildPathnamesTree(names),
         {name: 'root', children: [
           {name: 'dir1/dir2', children: []},
           {name: 'dirA/dirB', children: [
               {name: 'dirC', children: [
                 {name: 'dirD', children: []}
               ]}
+          ]},
+        ]}
+      );
+    });
+    it('GIVEN multiple dirs over many levels and multiple children on one level THEN do it right ;)', () => {
+      const names = [
+        'file.js', 
+        'dirA/dirB/file1.js',
+        'dirA/dirB/dirC/file1.js',
+        'dirA/dirB/dirC1/file1.js',
+        'dirA/dirB/dirC2/file1.js',
+      ];
+      assert.deepStrictEqual(
+        buildPathnamesTree(names), 
+        {name: 'root', children: [
+          {name: 'dirA/dirB', children: [
+              {name: 'dirC', children: []},
+              {name: 'dirC1', children: []},
+              {name: 'dirC2', children: []},
           ]},
         ]}
       );
@@ -344,13 +363,12 @@ const removeEmptyStrings = f => f.trim() !== '';
 const findRoots = (files) => {
   const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
   const isSubDir = name => dirs.some(dir => name.startsWith(`${dir}/`));
-  const x = dirs
+  return dirs
     .map(d => ({value: d, isRoot: true}))
     .map(d => isSubDir(d.value) ? {...d, isRoot: false} : d)
     .filter(d => d.isRoot)
     .map(d => d.value)
   ;
-  return x;
 }
 
 const splitOutPathnames = (files) => {
