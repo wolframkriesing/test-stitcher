@@ -141,9 +141,12 @@ describe('Group test suites from multiple files and produce one containing them 
 const newSuite = name => ({name, suites: [], tests: [], origin: name});
 const generateSuiteTree = (suites) => {
   const subSuites = [];
-  if (suites.length > 1 && suites[1].origin.startsWith('dir1/dir2')) {
+  if (suites[0].origin.startsWith('dir1/') && suites[1].origin.startsWith('dir1/dir2')) {
     const subsub = newSuite('dir1');
     subsub.suites.push(newSuite('dir2'));
+    subSuites.push(subsub);
+  } else if (suites[1].origin.startsWith('dir1/dir2')) {
+    const subsub = newSuite('dir1/dir2');
     subSuites.push(subsub);
   } else {
     subSuites.push(newSuite('dir'));
@@ -164,8 +167,15 @@ describe('From a list of files (and directories) build a hierarchy of suites', (
     assert.strictEqual(tree.name, 'root');
     assert.strictEqual(tree.suites[0].name, 'dir');
   });
-  it('GIVEN two levels deep THEN build suites accordingly', () => {
+  it('GIVEN two levels deep WHEN a file is only at the end THEN render just one child suite', () => {
     const suite1 = {name: '', suites: [], tests: [], origin: 'file.js'};
+    const suite2 = {name: '', suites: [], tests: [], origin: 'dir1/dir2/file.js'};
+    const tree = generateSuiteTree([suite1, suite2]);
+    assert.strictEqual(tree.name, 'root');
+    assert.strictEqual(tree.suites[0].name, 'dir1/dir2');
+  });
+  it('GIVEN two levels deep WHEN a file on every level THEN render each as child', () => {
+    const suite1 = {name: '', suites: [], tests: [], origin: 'dir1/file.js'};
     const suite2 = {name: '', suites: [], tests: [], origin: 'dir1/dir2/file.js'};
     const tree = generateSuiteTree([suite1, suite2]);
     assert.strictEqual(tree.name, 'root');
