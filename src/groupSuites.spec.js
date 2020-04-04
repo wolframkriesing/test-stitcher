@@ -338,4 +338,51 @@ describe('Build tree from directory names', () => {
   });
 });
 
-const splitOutPathnames = () => [];
+const splitOutPathnames = () => [];const splitOutPathnames = () => [];
+
+describe.only('Split a set of file names for building a suites tree structure', () => {
+  /*
+  - [ ] simple paths: src/file.js 
+  - [ ] subdirs: 1/2/3.js => ['1/2']
+  - [ ] URLs: http://io.js/tests/1.js => ['http://io.js/tests']
+  - [ ]  
+   */
+  describe('HELPER tests: find roots', () => {
+    const uniques = arr => [...new Set(arr)];
+    const findRoots = (files) => {
+      const removeFilenames = f => f.split('/').slice(0, -1).join('/');
+      const removeEmptyStrings = f => f.trim() !== '';
+      const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
+      return dirs;
+    }
+    describe('just files', () => {
+      it('GIVEN a file at the root THEN return no path names', () => {
+        const files = ['1.js'];
+        assert.deepStrictEqual(findRoots(files), []);
+      });
+      it('GIVEN many file at the root THEN return no path names', () => {
+        const files = ['1.js', '2.js'];
+        assert.deepStrictEqual(findRoots(files), []);
+      });
+    });
+    describe('one level deep dirs', () => {
+      it('GIVEN a file in a dir THEN return that path name', () => {
+        const files = ['1/2.js'];
+        assert.deepStrictEqual(findRoots(files), ['1']);
+      });
+      it('GIVEN files in many dirs THEN return that path names', () => {
+        const files = ['1/2.js', '3/4.js', '5/6.js', '7/8.js'];
+        assert.deepStrictEqual(findRoots(files), ['1', '3', '5', '7']);
+      });
+      it('AND every dir only once', () => {
+        const files = ['1/2a.js', '1/2b.js', '3/4x.js', '3/4y.js', '3/4z.js'];
+        assert.deepStrictEqual(findRoots(files), ['1', '3']);
+      });
+      it('AND sorted by name', () => {
+        assert.deepStrictEqual(findRoots(['b/1.js', 'a/1.js']), ['a', 'b']);
+        assert.deepStrictEqual(findRoots(['a/1.js', '1/1.js']), ['1', 'a']);
+        assert.deepStrictEqual(findRoots(['bCd/1.js', 'aCd/1.js']), ['aCd', 'bCd']);
+      });
+    });
+  });
+});
