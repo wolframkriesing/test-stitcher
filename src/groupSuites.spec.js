@@ -338,30 +338,25 @@ describe('Build tree from directory names', () => {
   });
 });
 
+const uniques = arr => [...new Set(arr)];
+const findRoots = (files) => {
+  const removeFilenames = f => f.split('/').slice(0, -1).join('/');
+  const removeEmptyStrings = f => f.trim() !== '';
+  const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
+  const isSubDir = name => dirs.some(dir => name.startsWith(`${dir}/`));
+  const x = dirs
+    .map(d => ({value: d, isRoot: true}))
+    .map(d => isSubDir(d.value) ? {...d, isRoot: false} : d)
+    .filter(d => d.isRoot)
+    .map(d => d.value)
+  ;
+  return x;
+}
+
 const splitOutPathnames = () => [];
 
 describe.only('Split a set of file names for building a suites tree structure', () => {
-  /*
-  - [ ] simple paths: src/file.js 
-  - [ ] subdirs: 1/2/3.js => ['1/2']
-  - [ ] URLs: http://io.js/tests/1.js => ['http://io.js/tests']
-  - [ ]  
-   */
   describe('HELPER tests: find roots', () => {
-    const uniques = arr => [...new Set(arr)];
-    const findRoots = (files) => {
-      const removeFilenames = f => f.split('/').slice(0, -1).join('/');
-      const removeEmptyStrings = f => f.trim() !== '';
-      const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
-      const isSubDir = name => dirs.some(dir => name.startsWith(`${dir}/`));
-      const x = dirs
-        .map(d => ({value: d, isRoot: true}))
-        .map(d => isSubDir(d.value) ? {...d, isRoot: false} : d)
-        .filter(d => d.isRoot)
-        .map(d => d.value)
-      ;
-      return x;
-    }
     describe('just files', () => {
       it('GIVEN a file at the root THEN return no path names', () => {
         const files = ['1.js'];
@@ -415,5 +410,28 @@ describe.only('Split a set of file names for building a suites tree structure', 
         ]);
       });
     });
+    describe('URLs too', () => {
+      it('GIVEN a URL THEN return it as root', () => {
+        const files = ['http://pico.stitch/t.js'];
+        assert.deepStrictEqual(findRoots(files), ['http://pico.stitch']);
+      });
+      it('GIVEN many URLs one with a subdir THEN return each as root', () => {
+        const files = ['http://pico.stitch/t.js', 'http://site.stitch/test/t.js'];
+        assert.deepStrictEqual(findRoots(files), [
+          'http://pico.stitch', 'http://site.stitch/test'
+        ]);
+      });
+      it('GIVEN URLs and files THEN just do it right', () => {
+        const files = [
+          'file.js',
+          'http://pico.stitch/t.js', 'http://site.stitch/test/1/2/3/t.js',
+          'dir/1/2/3.js',
+        ];
+        assert.deepStrictEqual(findRoots(files), [
+          'dir/1/2',
+          'http://pico.stitch', 'http://site.stitch/test/1/2/3',
+        ]);
+      });
+    });
   });
-});});
+});
