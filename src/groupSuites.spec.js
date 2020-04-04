@@ -267,7 +267,7 @@ describe('Build tree from directory names', () => {
     });
   });
   describe('many levels but some empty', () => {
-    xit('GIVEN some URLs', () => {
+    it('GIVEN some URLs', () => {
       const names = [
         'http://st.itch/tests/1.js',
         'http://st.itch/tests/2.js',
@@ -279,7 +279,7 @@ describe('Build tree from directory names', () => {
         ]}
       );
     });
-    xit('GIVEN some long paths', () => {
+    it('GIVEN some long paths', () => {
       const names = [
         '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests/file1.js',
         '/Users/wolframkriesing/github.com/wolframkriesing/test-stitcher/tests/file2.js',
