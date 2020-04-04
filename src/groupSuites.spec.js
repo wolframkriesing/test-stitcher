@@ -178,16 +178,11 @@ const generateSuiteTree = (suites) => {
   } else {
     const origins = suites.map(suite => suite.origin);
     const tree = buildPathnamesTree(origins);
-    const rootSuite = newSuite('root');
-    rootSuite.suites.push(newSuite(tree.children[0].name));
-    return rootSuite
+    subSuites.push(newSuite(tree.children[0].name));
   }
-  return {
-    name: 'root',
-    suites: subSuites,
-    tests: [],
-    origin: ''
-  };
+  const rootSuite = newSuite('root');
+  rootSuite.suites = subSuites;
+  return rootSuite;
 };
 
 describe('From a list of files (and directories) build a hierarchy of suites', () => {
