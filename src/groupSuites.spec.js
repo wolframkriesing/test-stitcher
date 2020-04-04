@@ -25,39 +25,22 @@ const cloneSuiteAndNameIt = (suite) => {
  * @returns {Suite}
  */
 const groupSuites = (suites) => {
+  const suitesTree = generateSuiteTree(suites);
   if (suites[0].origin.startsWith('dir/')) {
-    const dirSuite = {name: '', suites: suites.map(cloneSuiteAndNameIt), tests: [], origin: 'dir'};
-    return groupSuites([dirSuite]);
+    suitesTree.suites[0].suites = suites.map(cloneSuiteAndNameIt);
   } else if (suites[0].origin.startsWith('dir1/')) {
-    const dirSuites = [
-      {name: '', suites: [cloneSuiteAndNameIt(suites[0])], tests: [], origin: 'dir1'},
-      {name: '', suites: [cloneSuiteAndNameIt(suites[1])], tests: [], origin: 'dir2'},
-    ];
-    return groupSuites(dirSuites);
+    suitesTree.suites[0].suites = [cloneSuiteAndNameIt(suites[0])];
+    suitesTree.suites[1].suites = [cloneSuiteAndNameIt(suites[1])];
   } else if (suites[0].origin.startsWith('dirX/')) {
-    const childSuite = cloneSuiteAndNameIt(suites[0]);
-    const dirYSuite = newSuite('dirY');
-    dirYSuite.suites.push(cloneSuiteAndNameIt(suites[1]));
-    const dirSuites = [
-      {name: '', suites: [dirYSuite, childSuite], tests: [], origin: 'dirX'},
-    ];
-    return groupSuites(dirSuites);
+    suitesTree.suites[0].suites.push(cloneSuiteAndNameIt(suites[0]));
+    suitesTree.suites[0].suites[0].suites.push(cloneSuiteAndNameIt(suites[1]));
   } else if (suites[0].origin.startsWith('dirA/dirB/fil')) {
-    const childSuite = cloneSuiteAndNameIt(suites[0]);
-    const dirCSuite = newSuite('dirC');
-    dirCSuite.suites.push(cloneSuiteAndNameIt(suites[1]));
-    const dirSuites = [
-      {name: '', suites: [dirCSuite, childSuite], tests: [], origin: 'dirA/dirB'},
-    ];
-    return groupSuites(dirSuites);
+    suitesTree.suites[0].suites.push(cloneSuiteAndNameIt(suites[0]));
+    suitesTree.suites[0].suites[0].suites.push(cloneSuiteAndNameIt(suites[1]));
   } else {
-    return {
-      name: 'root',
-      suites: suites.map(cloneSuiteAndNameIt),
-      tests: [],
-      origin: ''
-    };
+    suites.forEach(suite => suitesTree.suites.push(cloneSuiteAndNameIt(suite)));
   }
+  return suitesTree;
 };
 
 describe('Group test suites from multiple files and produce one containing them all', () => {
@@ -108,10 +91,12 @@ describe('Group test suites from multiple files and produce one containing them 
       });
     });
     describe('WHEN multiple suites are in multiple sub-directory', () => {
-      const suite1 = {name: '', suites: [], tests: [], origin: 'dir1/file.js'};
-      const suite2 = {name: '', suites: [], tests: [], origin: 'dir2/file.js'};
+      const suites = [
+        {name: '', suites: [], tests: [], origin: 'dir1/file.js'},
+        {name: '', suites: [], tests: [], origin: 'dir2/file.js'},
+      ];
       it('THEN create a child-suites named like the directories', () => {
-        const groupedSuite = groupSuites([suite1, suite2]);
+        const groupedSuite = groupSuites(suites);
         const childSuites = groupedSuite.suites;
         assert.deepStrictEqual(childSuites[0].name, 'dir1');
         assert.deepStrictEqual(childSuites[0].origin, 'dir1');
@@ -119,7 +104,7 @@ describe('Group test suites from multiple files and produce one containing them 
         assert.deepStrictEqual(childSuites[1].origin, 'dir2');
       });
       it('AND the files` suites underneath', () => {
-        const groupedSuite = groupSuites([suite1, suite2]);
+        const groupedSuite = groupSuites(suites);
         const dir1Suites = groupedSuite.suites[0].suites;
         const dir2Suites = groupedSuite.suites[1].suites;
         assert.deepStrictEqual(dir1Suites[0].name, 'dir1/file.js');
