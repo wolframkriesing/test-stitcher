@@ -339,9 +339,9 @@ describe('Build tree from directory names', () => {
 });
 
 const uniques = arr => [...new Set(arr)];
+const removeFilenames = f => f.split('/').slice(0, -1).join('/');
+const removeEmptyStrings = f => f.trim() !== '';
 const findRoots = (files) => {
-  const removeFilenames = f => f.split('/').slice(0, -1).join('/');
-  const removeEmptyStrings = f => f.trim() !== '';
   const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
   const isSubDir = name => dirs.some(dir => name.startsWith(`${dir}/`));
   const x = dirs
@@ -480,16 +480,58 @@ describe.only('Split a set of file names for building a suites tree structure', 
       });
     });
     describe('WHEN local absolute files are given', () => {
-      
+      it('AND many files on one level THEN return each path name once', () => {
+        const files = [
+          '/a/b/c/e.js', '/a/b/c/d/f.js', '/a/b/c/d/g.js', 
+          '/1/2.js',
+        ];
+        assert.deepStrictEqual(splitOutPathnames(files), [
+          ['/1'],
+          ['/a/b/c'],
+          ['/a/b/c', 'd'],
+        ]);
+      });
     });
     describe('WHEN local relative+absolute files are given', () => {
-      
+      it('AND many files on one level THEN return each path name once', () => {
+        const files = [
+          '/a/b/c/e.js', '/a/b/c/d/f.js',
+          'a/b/c/d/g.js', 
+          '1/2.js',
+        ];
+        assert.deepStrictEqual(splitOutPathnames(files), [
+          ['/a/b/c'],
+          ['/a/b/c', 'd'],
+          ['1'],
+          ['a/b/c/d'],
+        ]);
+      });
     });
     describe('WHEN URLs are given', () => {
-      
+      it('AND many files on one level THEN return each path name once', () => {
+        const files = [
+          'http://c.es/e.js', 'http://c.es/1/2/e.js', 'http://c.es/1/2/a.js',
+        ];
+        assert.deepStrictEqual(splitOutPathnames(files), [
+          ['http://c.es'],
+          ['http://c.es', '1', '2'],
+        ]);
+      });
     });
     describe('WHEN URLs, local and absolute files are given', () => {
-      
+      it('AND many files on one level THEN return each path name once', () => {
+        const files = [
+          'http://c.es/e.js', 'http://c.es/1/2/e.js', 'http://c.es/1/2/a.js',
+          'a/b/1.js',
+          '1/2.js', '1/3.js', 
+        ];
+        assert.deepStrictEqual(splitOutPathnames(files), [
+          ['1'],
+          ['a/b'],
+          ['http://c.es'],
+          ['http://c.es', '1', '2'],
+        ]);
+      });
     });
   });
 });
