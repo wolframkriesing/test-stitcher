@@ -1,5 +1,5 @@
 # test-stitcher
-Extract the test descriptions from a set of tests.  
+Extract the test descriptions from tests.  
 **This project lets you read (and analyze) the test descriptions, to understand what the code does.**
 Test descriptions are the human-readable describing a test, see examples below.
 
@@ -76,12 +76,12 @@ You can also run it when nodejs is installed on your machine, just leave out the
 Getting started:
 - `./run.sh npm i` - will install all nodejs dependencies this project needs to run
 - `./run.sh npm test` - run the tests
-- `./run.sh npm run parse-file src/extractTextFromTests.spec.js` - print the test descriptions
+- `./run.sh npm run parse-files src/extractTextFromTests.spec.js` - print the test descriptions
   of the given file
 
 The most important commands:
 - `./run.sh /bin/bash` to enter the docker container that contains the environment and the app
 - `./run.sh npm i` to install all the dependencies
 - `./run.sh npm test` to run the tests
-- `./run.sh npm run parse-file <path/to/testfile.js>` to parse the test descriptions out of the given file and write it to stdout
+- `./run.sh npm run parse-files <path/to/testfile.js>` to parse the test descriptions out of the given file and write it to stdout
 - if you want to have multiple terminals for entering the docker container, you can use `docker exec -it test-stitcher /bin/bash`

@@ -8,15 +8,15 @@
 - [ ] all `suites` need to be renamed to a better name, it used to be
       an array `[]` but it became `{suites: [], tests: []}` - What is a good name for it?
       ... not sure there is a better name, sticking to suite for now
+- [ ] Reading many files: test speed - make it fast (reading many files and so on)
 
 # v2
-- [ ] take multiple test files as parameter and parse them
+- [x] take multiple test files as parameter and parse them
       challenges are:
    - [x] ~~name this group of tests :) (might be a file, might be a `describe`)~~ sticking with `suite`
-   - [ ] make it fast (reading many files and so on)
    - [x] Q: how are parameters (many files) passed? 
          A: as usually for scripts, separated by a space
-   - [ ] must work for URLs and files
+   - [x] must work for URLs and files
 - [x] introduce TS
 - [ ] `./run.sh npm run parse-file <path/to/testfile.js> -- --json` to parse the test descriptions out of the given file as JSON
 
