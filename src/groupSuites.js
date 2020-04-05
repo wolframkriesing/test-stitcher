@@ -23,13 +23,22 @@ const cloneSuiteAndNameIt = (suite) => {
  */
 export const groupSuites = (suites) => {
   const suitesTree = generateSuiteTree(suites);
+  /** @type {{[key: string]: Suite[]}} */
   const suitesByDir = {};
+  /**
+   * @param {Filename} filename
+   * @returns {string}
+   */
   const dirName = filename => filename.split('/').slice(0, -1).join('/');
   suites.forEach(suite => {
     const dir = dirName(suite.origin);
     if (!Reflect.has(suitesByDir, dir)) suitesByDir[dir] = [];
     suitesByDir[dir].push(suite);
   });
+  /**
+   * @param {Suite[]} suites
+   * @param {string} dir
+   */
   const cloneFileSuitesInto = (suites, dir) => {
     suites.forEach(suite => {
       if (suite.suites.length > 0) {
@@ -47,10 +56,22 @@ export const groupSuites = (suites) => {
   return suitesTree;
 };
 
+/**
+ * @param {string} name
+ * @returns {Suite}
+ */
 const newSuite = name => ({name, suites: [], tests: [], origin: name});
+/**
+ * @param {Suite[]} suites
+ * @returns {Suite}
+ */
 export const generateSuiteTree = (suites) => {
   const origins = suites.map(suite => suite.origin);
   const tree = buildPathnamesTree(origins);
+  /**
+   * @param {import("./groupSuites").PathnamesTree} leaf
+   * @returns {Suite}
+   */
   const createChildSuite = (leaf) => {
     const suite = newSuite(leaf.name);
     if (leaf.children.length > 0) {
@@ -63,8 +84,17 @@ export const generateSuiteTree = (suites) => {
   return root;
 };
 
+/**
+ * @param {Filename[]} filenamesWithPath
+ * @returns {import("./groupSuites").PathnamesTree}
+ */
 export const buildPathnamesTree = (filenamesWithPath) => {
   const createdDirs = new Map();
+  /**
+   * @param {string[]} dirNames
+   * @param {number} depth
+   * @param {import("./groupSuites").PathnamesTree} parent
+   */
   const buildDirTree = (dirNames, depth, parent) => {
     const curDirName = dirNames[depth];
     const curFullDir = dirNames.slice(0, depth + 1).join('/');
@@ -81,11 +111,31 @@ export const buildPathnamesTree = (filenamesWithPath) => {
   return root;
 };
 
+/**
+ * @param {Filename[]} arr
+ * @returns {Filename[]}
+ */
 const uniques = arr => [...new Set(arr)];
-const removeFilenames = f => f.split('/').slice(0, -1).join('/');
-const removeEmptyStrings = f => f.trim() !== '';
+/**
+ * @param {string} f
+ * @returns {string}
+ */
+const trimFilename = f => f.split('/').slice(0, -1).join('/');
+/**
+ * @param {string} f
+ * @returns {boolean}
+ */
+const isEmptyString = f => f.trim() !== '';
+/**
+ * @param {Filename[]} files
+ * @returns {string[]}
+ */
 export const findRoots = (files) => {
-  const dirs = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
+  const dirs = uniques(files.map(trimFilename).filter(isEmptyString)).sort();
+  /**
+   * @param {Filename} name
+   * @returns {boolean}
+   */
   const isSubDir = name => dirs.some(dir => name.startsWith(`${dir}/`));
   return dirs
     .map(d => ({value: d, isRoot: true}))
@@ -95,9 +145,17 @@ export const findRoots = (files) => {
   ;
 }
 
+/**
+ * @param {Filename[]} files
+ * @returns {string[][]}
+ */
 export const splitOutPathnames = (files) => {
   const roots = findRoots(files);
-  const pathnames = uniques(files.map(removeFilenames).filter(removeEmptyStrings)).sort();
+  const pathnames = uniques(files.map(trimFilename).filter(isEmptyString)).sort();
+  /**
+   * @param {string} n
+   * @returns {string}
+   */
   const findRoot = n => roots.filter(r => n.startsWith(r + '/') || r === n)[0];
   return pathnames
     .map(path => ({root: findRoot(path), path}))

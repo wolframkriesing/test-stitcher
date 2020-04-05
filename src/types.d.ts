@@ -11,6 +11,7 @@ type Suite = {
   name: string;
   suites: Suite[];
   tests: Test[];
+  origin?: Filename; /* TODO make required??? */
 }
 
 type Stats = {
