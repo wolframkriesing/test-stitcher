@@ -9,6 +9,12 @@
       an array `[]` but it became `{suites: [], tests: []}` - What is a good name for it?
       ... not sure there is a better name, sticking to suite for now
 - [ ] Reading many files: test speed - make it fast (reading many files and so on)
+- [ ] put a `stats` attrribute in each `Suite` to have stats per suite
+- [ ] add stats:
+  - [ ] LOC in test
+  - [ ] number of assertions in test
+  - [ ] identifiers used (all identifiers that are used in the test, variables, class names, etc.)
+  - [ ] type: file|directory|suite|test
 
 # v2
 - [x] take multiple test files as parameter and parse them
@@ -18,6 +24,8 @@
          A: as usually for scripts, separated by a space
    - [x] must work for URLs and files
 - [x] introduce TS
+- [ ] fix the types, currently failing
+- [ ] extend the Suite type (with origin)
 - [ ] `./run.sh npm run parse-file <path/to/testfile.js> -- --json` to parse the test descriptions out of the given file as JSON
 
 # v1 - Run on one file
