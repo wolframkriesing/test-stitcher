@@ -1,14 +1,15 @@
 import * as assert from 'assert';
 import {it, describe} from 'mocha';
 import {extractTestSuites} from './extractTextFromTests.js';
+import {emptySuite} from './Suite.js';
 
 describe('Extract the test descriptions from a block of source code (mostly a file)', () => {
   describe('GIVEN a string', () => {
     it('WHEN it is empty THEN return no test suites', () => {
-      assert.deepStrictEqual(extractTestSuites(''), {name: '', suites: [], tests: [], origin: ''});
+      assert.deepStrictEqual(extractTestSuites(''), emptySuite());
     });
     it('WHEN it contains not test THEN return no test suites', () => {
-      assert.deepStrictEqual(extractTestSuites('var x = 1; // but no test'), {name: '', suites: [], tests: [], origin: ''});
+      assert.deepStrictEqual(extractTestSuites('var x = 1; // but no test'), emptySuite());
     });
     describe('WHEN it contains one `describe`', () => {
       it('THEN return one test suite', () => {

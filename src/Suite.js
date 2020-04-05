@@ -1,8 +1,17 @@
 /**
+ * @returns {Suite}
+ */
+export const emptySuite = () => ({name: '', suites: [], tests: [], origin: ''});
+
+/**
  * @param {string} name
  * @returns {Suite}
  */
-export const createNewSuite = name => ({name, suites: [], tests: [], origin: ''});
+export const createNewSuite = name => {
+  const suite = emptySuite();
+  suite.name = name;
+  return suite;
+};
 
 /**
  * @param {Suite} suite

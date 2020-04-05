@@ -1,21 +1,22 @@
 import * as assert from 'assert';
 import {describe, it} from 'mocha';
 import {stats} from './stats.js';
+import {emptySuite, createNewSuite} from './Suite.js';
 
 describe('Provide statistics about test suites', () => {
   it('GIVEN no test suites and no tests THEN return 0 for everything', () => {
-    const noSuites = {name: '', suites: [], tests: [], origin: ''};
+    const noSuites = emptySuite();
     assert.deepEqual(stats(noSuites), {counts: {tests: 0, suites: 0}});
   });
   it('GIVEN one test suite with no tests THEN return the counts: suites=1, tests=0', () => {
-    const suite = {name: 'test suite', suites: [], tests: [], origin: ''};
+    const suite = createNewSuite('test suite');
     const suites = {name: '', suites: [suite], tests: [], origin: ''};
     assert.deepEqual(stats(suites), {counts: {tests: 0, suites: 1}});
   });
   it('GIVEN one test suite containing another one THEN return the counts: suites=2, tests=0', () => {
     const suite = {
       name: 'suite',
-      suites: [{name: 'suite', suites: [], tests: [], origin: ''}],
+      suites: [createNewSuite('suite')],
       tests: [],
       origin: ''
     };
@@ -23,18 +24,18 @@ describe('Provide statistics about test suites', () => {
     assert.deepEqual(stats(suites), {counts: {tests: 0, suites: 2}});
   });
   it('GIVEN two test suites containing two each THEN return the counts: suites=6, tests=0', () => {
-    const aSuite = {name: 'suite', suites: [], tests: [], origin: ''};
+    const aSuite = createNewSuite('suite');
     const suite = {name: 'suite', tests: [], suites: [aSuite, aSuite], origin: ''};
     const suites = {name: '', suites: [suite, suite], tests: [], origin: ''};
     assert.deepEqual(stats(suites), {counts: {tests: 0, suites: 6}});
   });
   it('GIVEN suites multiple levels deep THEN return the right counts', () => {
     const suites = [
-      {name: '', suites: [], tests: [], origin: ''},
-      {name: '', suites: [{name: '', suites: [], tests: [], origin: ''}], tests: [], origin: ''},
+      emptySuite(),
+      {name: '', suites: [emptySuite()], tests: [], origin: ''},
       {
         name: '',
-        suites: [{name: '', suites: [{name: '', suites: [], tests: [], origin: ''}], tests: [], origin: ''}],
+        suites: [{name: '', suites: [emptySuite()], tests: [], origin: ''}],
         tests: [],
         origin: '',
       },
@@ -42,7 +43,7 @@ describe('Provide statistics about test suites', () => {
         name: '',
         suites: [{
           name: '',
-          suites: [{name: '', suites: [], tests: [], origin: ''}, {name: '', suites: [], tests: [], origin: ''}],
+          suites: [emptySuite(), emptySuite()],
           tests: [],
           origin: '',
         }],
@@ -101,7 +102,7 @@ describe('Provide statistics about the tests', () => {
           suites: [{
             name: '',
             suites: [
-              {name: '', suites: [], tests: [], origin: ''},
+              emptySuite(),
               {name: '', suites: [], tests: [test, test], origin: ''}
             ],
             tests: [],
