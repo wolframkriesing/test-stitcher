@@ -1,15 +1,17 @@
 # ideas
 - [ ] stats: LOC of a test
-- [ ] lint: words used in test description and identifiers used in test code
-      if there is no overlap WARN, show the overlap ...
-      e.g. `it("counts the number of elements", () { assert(lengthOfAttrributes(...)) })`
-      there is no overlap in words "counts" vs. "length", "elements" vs. "attributes"
-      the test and its description should not use different language
 - [ ] all `suites` need to be renamed to a better name, it used to be
       an array `[]` but it became `{suites: [], tests: []}` - What is a good name for it?
       ... not sure there is a better name, sticking to suite for now
 - [ ] Reading many files: test speed - make it fast (reading many files and so on)
 - [ ] put a `stats` attrribute in each `Suite` to have stats per suite
+- [ ] lint ideas: 
+  - [ ] words used in test description and identifiers used in test code
+        if there is no overlap WARN, show the overlap ...
+        e.g. `it("counts the number of elements", () { assert(lengthOfAttrributes(...)) })`
+        there is no overlap in words "counts" vs. "length", "elements" vs. "attributes"
+        the test and its description should not use different language
+  - [ ] if all tests start with `render element ...` this can be grouped into a suite with that name
 - [ ] add stats:
   - [ ] LOC in test
   - [ ] number of assertions in test
