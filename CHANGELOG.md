@@ -15,6 +15,7 @@
   - [ ] number of assertions in test
   - [ ] identifiers used (all identifiers that are used in the test, variables, class names, etc.)
   - [ ] type: file|directory|suite|test
+- [ ] does it add value, if the type `Filename` will be made of `Dirname + / + Filename`?
 
 # v2
 - [x] take multiple test files as parameter and parse them
