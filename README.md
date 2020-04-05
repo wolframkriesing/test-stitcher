@@ -102,3 +102,11 @@ NPM commands (for convinience, I left out the prefix `./run.sh `):
 - `npm i` to install all the dependencies
 - `npm run parse-files <path/to/testfile.js>` (many files are separated by a space) 
   to parse the test descriptions out of the given file and write it to stdout
+  
+## How I develop
+- I have two parallel terminals open, one with the test watcher and another one with the typechecker in watch mode
+  if I need, I open a third terminal to play around with other npm commands, like installing another dependency or
+  trying out the `npm run parse-files` command.
+  - in the first terminal I run `./run.sh npm run dev:test`
+  - in the second terminal I run `./run.sh npm run dev:typecheck`
+  - in the third terminal I normally have a bash running, inside the docker container, like so `./run.sh /bin/bash`
