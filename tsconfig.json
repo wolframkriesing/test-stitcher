@@ -6,7 +6,8 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "strict": true
+    "strict": true,
+    "downlevelIteration": true
   },
   "include": ["typings", "src"]
 }
