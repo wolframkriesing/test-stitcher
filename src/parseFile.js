@@ -35,6 +35,10 @@ const filenames = allCommandLineArgs.slice(indexWhereFileNamesStart);
 
 import {groupSuites} from './groupSuites.js';
 
+/**
+ * @param {Filename[]} filenames
+ * @returns {Promise<void>}
+ */
 const printAllFilesSuites  = async (filenames) => {
   let rootSuite;
   const readAll = filenames.map(extractTextFromFile);

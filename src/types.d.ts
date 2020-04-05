@@ -1,3 +1,8 @@
+type Url = string;
+type AbsoluteFilename = string;
+type RelativeFilename = string;
+type Filename = Url | AbsoluteFilename | RelativeFilename;
+
 type Test = {
   name: string;
 };
