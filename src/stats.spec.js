@@ -4,62 +4,67 @@ import {stats} from './stats.js';
 
 describe('Provide statistics about test suites', () => {
   it('GIVEN no test suites and no tests THEN return 0 for everything', () => {
-    const noSuites = {name: '', suites: [], tests: []};
+    const noSuites = {name: '', suites: [], tests: [], origin: ''};
     assert.deepEqual(stats(noSuites), {counts: {tests: 0, suites: 0}});
   });
   it('GIVEN one test suite with no tests THEN return the counts: suites=1, tests=0', () => {
-    const suite = {name: 'test suite', suites: [], tests: []};
-    const suites = {name: '', suites: [suite], tests: []};
+    const suite = {name: 'test suite', suites: [], tests: [], origin: ''};
+    const suites = {name: '', suites: [suite], tests: [], origin: ''};
     assert.deepEqual(stats(suites), {counts: {tests: 0, suites: 1}});
   });
   it('GIVEN one test suite containing another one THEN return the counts: suites=2, tests=0', () => {
     const suite = {
       name: 'suite',
-      suites: [{name: 'suite', suites: [], tests: []}],
-      tests: []
+      suites: [{name: 'suite', suites: [], tests: [], origin: ''}],
+      tests: [],
+      origin: ''
     };
-    const suites = {name: '', suites: [suite], tests: []};
+    const suites = {name: '', suites: [suite], tests: [], origin: ''};
     assert.deepEqual(stats(suites), {counts: {tests: 0, suites: 2}});
   });
   it('GIVEN two test suites containing two each THEN return the counts: suites=6, tests=0', () => {
-    const aSuite = {name: 'suite', suites: [], tests: []};
-    const suite = {name: 'suite', tests: [], suites: [aSuite, aSuite]};
-    const suites = {name: '', suites: [suite, suite], tests: []};
+    const aSuite = {name: 'suite', suites: [], tests: [], origin: ''};
+    const suite = {name: 'suite', tests: [], suites: [aSuite, aSuite], origin: ''};
+    const suites = {name: '', suites: [suite, suite], tests: [], origin: ''};
     assert.deepEqual(stats(suites), {counts: {tests: 0, suites: 6}});
   });
   it('GIVEN suites multiple levels deep THEN return the right counts', () => {
     const suites = [
-      {name: '', suites: [], tests: []},
-      {name: '', suites: [{name: '', suites: [], tests: []}], tests: []},
+      {name: '', suites: [], tests: [], origin: ''},
+      {name: '', suites: [{name: '', suites: [], tests: [], origin: ''}], tests: [], origin: ''},
       {
         name: '',
-        suites: [{name: '', suites: [{name: '', suites: [], tests: []}], tests: []}],
-        tests: []
+        suites: [{name: '', suites: [{name: '', suites: [], tests: [], origin: ''}], tests: [], origin: ''}],
+        tests: [],
+        origin: '',
       },
       {
         name: '',
         suites: [{
           name: '',
-          suites: [{name: '', suites: [], tests: []}, {name: '', suites: [], tests: []}],
-          tests: []
+          suites: [{name: '', suites: [], tests: [], origin: ''}, {name: '', suites: [], tests: [], origin: ''}],
+          tests: [],
+          origin: '',
         }],
-        tests: []
+        tests: [],
+        origin: '',
       }
     ];
-    assert.deepEqual(stats({name: '', suites, tests: []}), {counts: {tests: 0, suites: 10}});
+    assert.deepEqual(stats({name: '', suites, tests: [], origin: ''}), {counts: {tests: 0, suites: 10}});
   });
 });
 
 describe('Provide statistics about the tests', () => {
   it('GIVEN no suites, just one test THEN return the count=1', () => {
-    const oneTest = {name: '', suites: [], tests: [{name: ''}]};
+    const oneTest = {name: '', suites: [], tests: [{name: ''}], origin: ''};
     assert.deepEqual(stats(oneTest), {counts: {tests: 1, suites: 0}});
   });
   it('GIVEN a test on the 2nd level of nested suites THEN return count=1', () => {
     const oneTest = {
       name: '',
-      suites: [{name: '', suites: [], tests: [{name: ''}]}],
-      tests: []
+      suites: [{name: '', suites: [], tests: [{name: ''}], origin: ''}],
+      tests: [],
+      origin: '',
     };
     assert.deepEqual(stats(oneTest), {counts: {tests: 1, suites: 1}});
   });
@@ -71,36 +76,43 @@ describe('Provide statistics about the tests', () => {
         {
           name: '',
           suites: [],
-          tests: [test, test]
+          tests: [test, test],
+          origin: '',
         },
         {
           name: '',
-          suites: [{name: '', suites: [], tests: [test]}],
-          tests: [test]
+          suites: [{name: '', suites: [], tests: [test], origin: ''}],
+          tests: [test],
+          origin: '',
         },
         {
           name: '',
           suites: [{
             name: '',
-            suites: [{name: '', suites: [], tests: [test, test]}],
-            tests: [test]
+            suites: [{name: '', suites: [], tests: [test, test], origin: ''}],
+            tests: [test],
+            origin: ''
           }],
-          tests: [test]
+          tests: [test],
+          origin: '',
         },
         {
           name: '',
           suites: [{
             name: '',
             suites: [
-              {name: '', suites: [], tests: []},
-              {name: '', suites: [], tests: [test, test]}
+              {name: '', suites: [], tests: [], origin: ''},
+              {name: '', suites: [], tests: [test, test], origin: ''}
             ],
-            tests: []
+            tests: [],
+            origin: '',
           }],
-          tests: []
+          tests: [],
+          origin: '',
         }
       ],
-      tests: [test]
+      tests: [test],
+      origin: '',
     };
     assert.deepEqual(stats(all), {counts: {tests: 11, suites: 10}});
   });

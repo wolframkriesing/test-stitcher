@@ -1,11 +1,22 @@
 import * as ts from 'typescript';
 
 /**
+ * @param {string} name
+ * @returns {Suite}
+ */
+const createNewSuite = name => ({name, suites: [], tests: [], origin: ''});
+/**
+ * @param {string} name
+ * @returns {Test}
+ */
+const createNewTest = name => ({name});
+
+/**
  * @param {ts.SourceFile} sourceFile
  * @returns {Suite}
  */
 const allSuites = (sourceFile) => {
-  const suites = {name: '', suites: [], tests: []};
+  const suites = createNewSuite('');
   /**
    * @param {ts.Node} node
    * @param {Suite} parentSuite
@@ -18,14 +29,14 @@ const allSuites = (sourceFile) => {
         if (functionName === 'describe') {
           const firstArgument = child.arguments[0];
           if (ts.isStringLiteral(firstArgument)) {
-            const newSuite = {name: firstArgument.text, suites: [], tests: []};
+            const newSuite = createNewSuite(firstArgument.text);
             parentSuite.suites.push(newSuite);
             searchDescendants(child, newSuite);
           }
         } else if (functionName === 'it') {
           const firstArgument = child.arguments[0];
           if (ts.isStringLiteral(firstArgument)) {
-            const newTest = {name: firstArgument.text};
+            const newTest = createNewTest(firstArgument.text);
             parentSuite.tests.push(newTest);
           }
         }
