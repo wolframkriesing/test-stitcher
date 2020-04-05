@@ -26,20 +26,26 @@ const cloneSuiteAndNameIt = (suite) => {
  */
 const groupSuites = (suites) => {
   const suitesTree = generateSuiteTree(suites);
-  if (suites[0].origin.startsWith('dir/')) {
-    suitesTree.suites[0].suites = suites.map(cloneSuiteAndNameIt);
-  } else if (suites[0].origin.startsWith('dir1/')) {
-    suitesTree.suites[0].suites = [cloneSuiteAndNameIt(suites[0])];
-    suitesTree.suites[1].suites = [cloneSuiteAndNameIt(suites[1])];
-  } else if (suites[0].origin.startsWith('dirX/')) {
-    suitesTree.suites[0].suites.push(cloneSuiteAndNameIt(suites[0]));
-    suitesTree.suites[0].suites[0].suites.push(cloneSuiteAndNameIt(suites[1]));
-  } else if (suites[0].origin.startsWith('dirA/dirB/fil')) {
-    suitesTree.suites[0].suites.push(cloneSuiteAndNameIt(suites[0]));
-    suitesTree.suites[0].suites[0].suites.push(cloneSuiteAndNameIt(suites[1]));
-  } else {
-    suites.forEach(suite => suitesTree.suites.push(cloneSuiteAndNameIt(suite)));
+  const suitesByDir = {};
+  const dirName = filename => filename.split('/').slice(0, -1).join('/');
+  suites.forEach(suite => {
+    const dir = dirName(suite.origin);
+    if (!Reflect.has(suitesByDir, dir)) suitesByDir[dir] = [];
+    suitesByDir[dir].push(suite);
+  });
+  const cloneFileSuitesInto = (suites, dir) => {
+    suites.forEach(suite => {
+      if (suite.suites.length > 0) {
+        cloneFileSuitesInto(suite.suites, (dir ? dir + '/' : '') + suite.name);
+      }
+      const suitesDir = (dir ? dir + '/' : '') + suite.origin;
+      suitesByDir[suitesDir].forEach(s => { suite.suites.push(cloneSuiteAndNameIt(s)); });
+    });
+    if (Reflect.has(suitesByDir, dir))
+      suitesByDir[dir].forEach(s => suites.push(cloneSuiteAndNameIt(s)));
   }
+  
+  cloneFileSuitesInto(suitesTree.suites, '');
   return suitesTree;
 };
 
