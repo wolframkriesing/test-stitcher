@@ -27,6 +27,7 @@
 - [ ] fix the types, currently failing
 - [ ] extend the Suite type (with origin)
 - [ ] `./run.sh npm run parse-file <path/to/testfile.js> -- --json` to parse the test descriptions out of the given file as JSON
+- [x] allow `./run.sh` to be called in multiple terminal sessions and enter always the same one docker container
 
 # v1 - Run on one file
 - [x] `./run.sh npm i` to install all the dependencies

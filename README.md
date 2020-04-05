@@ -85,11 +85,20 @@ Getting started:
 - `./run.sh npm test` - run the tests
 - `./run.sh npm run parse-files src/extractTextFromTests.spec.js` - print the test descriptions
   of the given file
+  
+Development:
+- `./run.sh /bin/bash` opens a bash terminal running inside the container, from there I can run any npm command, etc.
+  as if it was local (just that ONLY the project files are mounted into this container under `/app`)  
+- calling `./run.sh <something>` multiple times in multiple terminals will run the container the first time and 
+  only enter the container every other time (using `docker exec`), so there is always just one container running
 
-The most important commands:
-- `./run.sh /bin/bash` to enter the docker container that contains the environment and the app
-- `./run.sh npm i` to install all the dependencies
-- `./run.sh npm test` to run the tests
-- `./run.sh npm run parse-files <path/to/testfile.js>` (many files are separated by a space) 
+NPM commands (for convinience, I left out the prefix `./run.sh `):
+- for development most npm scripts can be prefixed with `dev:` (e.g. `npm run test` and `npm run dev:test`) 
+  to be run as (I found it) most convinient while in development mode    
+- `npm run dev:test` runs the tests in watch mode
+- `npm run dev:typecheck` runs the typechecker in watch mode
+- `npm run test` runs the tests once
+- `npm run typecheck` runs the typechecker once
+- `npm i` to install all the dependencies
+- `npm run parse-files <path/to/testfile.js>` (many files are separated by a space) 
   to parse the test descriptions out of the given file and write it to stdout
-- if you want to have multiple terminals for entering the docker container, you can use `docker exec -it test-stitcher /bin/bash`
