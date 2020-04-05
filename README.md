@@ -1,16 +1,23 @@
-# test-stitcher
-Extract the test descriptions from tests.  
-**This project lets you read (and analyze) the test descriptions, to understand what the code does.**
+# Test Stitcher
+
+Stitch all tests together, to see the big picture.
+
+Get insights on tests. Get a tree structure of all tests, their test descriptions and some stats about each
+test and each test suite (or group of tests).  
+**This project lets you read (and analyze) the test descriptions, to understand what the code does.**  
 Test descriptions are the human-readable describing a test, see examples below.
 
 ## TL;DR
 - `git clone <this repo>`
+- install docker
 - `./run.sh npm install` install app inside a docker container (or if you really should still have
   a global nodejs installation, you can also do `npm install`)
-- `./run.sh npm run parse-file src/extractTextFromTests.spec.js`
+- `./run.sh npm run parse-files src/extractTextFromTests.spec.js`
   show all test descriptions of a local test file
-- `./run.sh npm run parse-file https://katas.tddbin.com/katas/es1/language/global-api/parseInt.js`
-  show them from a remote file
+- `./run.sh npm run parse-files https://katas.tddbin.com/katas/es1/language/global-api/parseInt.js https://katas.tddbin.com/katas/es1/language/array-api/sort-basics.js` show the tests from remote files (here two katas as used on [jskatas.org](https://jskatas.org))
+- ``./run.sh npm run parse-files `find ./src -iname *spec.js` `` to stitch all the tests for this project together  
+  Note: using `./run.sh` mounts the project as a volume inside a docker container, that means only those 
+  files are visible and therefore just findable!
 
 ## A use case
 Given a test file like the following
@@ -35,7 +42,7 @@ describe('Extract the text from tests', () => {
   });
 });
 ```
-When you run `npm run parse-file <the-filename-of-the-file-above>`, you will get this on the
+When you run `npm run parse-files <the-filename-of-the-file-above>`, you will get this on the
 command line:
 ```text
 Extract the text from tests
@@ -83,5 +90,6 @@ The most important commands:
 - `./run.sh /bin/bash` to enter the docker container that contains the environment and the app
 - `./run.sh npm i` to install all the dependencies
 - `./run.sh npm test` to run the tests
-- `./run.sh npm run parse-files <path/to/testfile.js>` to parse the test descriptions out of the given file and write it to stdout
+- `./run.sh npm run parse-files <path/to/testfile.js>` (many files are separated by a space) 
+  to parse the test descriptions out of the given file and write it to stdout
 - if you want to have multiple terminals for entering the docker container, you can use `docker exec -it test-stitcher /bin/bash`
