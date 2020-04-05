@@ -25,8 +25,8 @@
          A: as usually for scripts, separated by a space
    - [x] must work for URLs and files
 - [x] introduce TS
-- [ ] fix the types, currently failing
-- [ ] extend the Suite type (with origin)
+- [x] fix the types, currently failing
+- [x] extend the Suite type (with origin)
 - [ ] `./run.sh npm run parse-file <path/to/testfile.js> -- --json` to parse the test descriptions out of the given file as JSON
 - [x] allow `./run.sh` to be called in multiple terminal sessions and enter always the same one docker container
 
