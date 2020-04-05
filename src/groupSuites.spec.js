@@ -39,7 +39,8 @@ const groupSuites = (suites) => {
         cloneFileSuitesInto(suite.suites, (dir ? dir + '/' : '') + suite.name);
       }
       const suitesDir = (dir ? dir + '/' : '') + suite.origin;
-      suitesByDir[suitesDir].forEach(s => { suite.suites.push(cloneSuiteAndNameIt(s)); });
+      if (Reflect.has(suitesByDir, suitesDir))
+        suitesByDir[suitesDir].forEach(s => { suite.suites.push(cloneSuiteAndNameIt(s)); });
     });
     if (Reflect.has(suitesByDir, dir))
       suitesByDir[dir].forEach(s => suites.push(cloneSuiteAndNameIt(s)));
@@ -151,6 +152,27 @@ describe('Group test suites from multiple files and produce one containing them 
         const dirCSuites = rootSuite.suites[0].suites[0].suites;
         assert.deepStrictEqual(dirBSuites[1].name, 'dirA/dirB/file.js');
         assert.deepStrictEqual(dirCSuites[0].name, 'dirA/dirB/dirC/file.js');
+      });
+    });
+    describe('WHEN paths, URLs, etc.', () => {
+      const suites = [
+        {name: '', suites: [], tests: [], origin: 'dirA/dirB/1.js'},
+        {name: '', suites: [], tests: [], origin: 'dirA/dirB/2.js'},
+        {name: '', suites: [], tests: [], origin: 'dirA/dirB/dirC/dirD/file.js'},
+        {name: '', suites: [], tests: [], origin: 'http://sti.tch/1/2/3.js'},
+      ];
+      it('THEN dont create a sub dir for the first levels', () => {
+        const rootSuite = groupSuites(suites);
+        assert.strictEqual(rootSuite.suites[0].name, 'dirA/dirB');
+        assert.strictEqual(rootSuite.suites[0].suites[1].origin, 'dirA/dirB/1.js');
+        assert.strictEqual(rootSuite.suites[0].suites[2].origin, 'dirA/dirB/2.js');
+        
+        assert.strictEqual(rootSuite.suites[0].suites[0].name, 'dirC');
+        assert.strictEqual(rootSuite.suites[0].suites[0].suites[0].name, 'dirD');
+        assert.strictEqual(rootSuite.suites[0].suites[0].suites[0].suites[0].origin, 'dirA/dirB/dirC/dirD/file.js');
+        
+        assert.strictEqual(rootSuite.suites[1].name, 'http://sti.tch/1/2');
+        assert.strictEqual(rootSuite.suites[1].suites[0].origin, 'http://sti.tch/1/2/3.js');
       });
     });
   });
