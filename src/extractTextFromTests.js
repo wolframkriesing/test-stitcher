@@ -1,10 +1,6 @@
 import * as ts from 'typescript';
+import {createNewSuite} from './Suite.js';
 
-/**
- * @param {string} name
- * @returns {Suite}
- */
-const createNewSuite = name => ({name, suites: [], tests: [], origin: ''});
 /**
  * @param {string} name
  * @returns {Test}

@@ -1,21 +1,4 @@
-/**
- * @param {Suite} suite
- * @returns {Suite}
- */
-const cloneSuite = (suite) => {
-  const clone = {...suite};
-  return clone;
-};
-
-/**
- * @param {Suite} suite
- * @returns {Suite}
- */
-const cloneSuiteAndNameIt = (suite) => {
-  const clone = cloneSuite(suite);
-  clone.name = suite.origin;
-  return clone;
-}
+import {createNewSuiteAndSetOrigin, cloneSuiteAndNameIt} from './Suite.js';
 
 /**
  * @param {Suite[]} suites
@@ -55,12 +38,6 @@ export const groupSuites = (suites) => {
   cloneFileSuitesInto(suitesTree.suites, '');
   return suitesTree;
 };
-
-/**
- * @param {string} name
- * @returns {Suite}
- */
-const newSuite = name => ({name, suites: [], tests: [], origin: name});
 /**
  * @param {Suite[]} suites
  * @returns {Suite}
@@ -73,13 +50,13 @@ export const generateSuiteTree = (suites) => {
    * @returns {Suite}
    */
   const createChildSuite = (leaf) => {
-    const suite = newSuite(leaf.name);
+    const suite = createNewSuiteAndSetOrigin(leaf.name);
     if (leaf.children.length > 0) {
       suite.suites = leaf.children.map(child => createChildSuite(child));
     }
     return suite;
   }
-  const root = newSuite('root');
+  const root = createNewSuiteAndSetOrigin('root');
   root.suites = tree.children.map(child => createChildSuite(child));
   return root;
 };
