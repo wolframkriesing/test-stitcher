@@ -8,7 +8,7 @@ import {extractTestSuites} from "./extractTextFromTests.js";
  * @returns {string}
  */
 const readFromLocalFilesystem = (fileName) => {
-  const fullFileName = path.join(process.cwd(), fileName);
+  const fullFileName = fileName.startsWith('/') ? fileName : path.join(process.cwd(), fileName);
   const sourceCode = fs.readFileSync(fullFileName, 'utf8');
   return sourceCode;
 };
