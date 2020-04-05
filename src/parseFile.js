@@ -30,17 +30,22 @@ const printStats = (stats) => {
   console.log(JSON.stringify(stats, null, 4));
 };
 const allCommandLineArgs = process.argv;
-const indexOfFileName = allCommandLineArgs.findIndex(arg => arg === __filename) + 1;
-const fileName = allCommandLineArgs[indexOfFileName];
+const indexWhereFileNamesStart = allCommandLineArgs.findIndex(arg => arg === __filename) + 1;
+const filenames = allCommandLineArgs.slice(indexWhereFileNamesStart);
 
-(async () => {
-  let testSuites;
+import {groupSuites} from './groupSuites.js';
+
+const printAllFilesSuites  = async (filenames) => {
+  let rootSuite;
+  const readAll = filenames.map(extractTextFromFile);
   try {
-    testSuites = await extractTextFromFile(fileName);
+    rootSuite = groupSuites(await Promise.all(readAll));
   } catch(e) {
     console.log(`ERROR reading file, error was: ${e}`);
     return;
   }
-  printTestSuites(testSuites);
-  printStats(stats(testSuites));
-})();
+  printTestSuites(rootSuite);
+  printStats(stats(rootSuite));
+};
+
+printAllFilesSuites(filenames);

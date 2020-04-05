@@ -51,5 +51,8 @@ export const extractTextFromFile = async (fileName) => {
   } catch(e) {
     throw(`ERROR reading file (using ${readFileFunction.name}, error was: ${e}`);
   }
-  return extractTestSuites(sourceCode);
+  const suite = extractTestSuites(sourceCode);
+  suite.origin = fileName;
+  return suite;
 };
+
