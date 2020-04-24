@@ -27,7 +27,8 @@ const printTestSuites = (all, depth = 0) => {
  */
 const printStats = (stats) => {
   console.log("\nStatistics\n-----------");
-  console.log(JSON.stringify(stats, null, 4));
+  console.log(`Number of suites: ${stats.counts.suites}`);
+  console.log(`Number of tests : ${stats.counts.tests}`);
 };
 const allCommandLineArgs = process.argv;
 const indexWhereFileNamesStart = allCommandLineArgs.findIndex(arg => arg === __filename) + 1;
