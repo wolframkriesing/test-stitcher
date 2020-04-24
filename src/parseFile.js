@@ -30,9 +30,10 @@ const printStats = (stats) => {
   console.log(`Number of suites: ${stats.counts.suites}`);
   console.log(`Number of tests : ${stats.counts.tests}`);
 };
-const allCommandLineArgs = process.argv;
-const indexWhereFileNamesStart = allCommandLineArgs.findIndex(arg => arg === __filename) + 1;
-const filenames = allCommandLineArgs.slice(indexWhereFileNamesStart);
+
+import clipp from 'clipp';
+const {strayparams: filenames, flags = []} = clipp.parse();
+const asJson = flags.includes('json');
 
 import {groupSuites} from './groupSuites.js';
 
@@ -49,8 +50,12 @@ const printAllFilesSuites  = async (filenames) => {
     console.log(`ERROR reading file, error was: ${e}`);
     return;
   }
-  printTestSuites(rootSuite);
-  printStats(stats(rootSuite));
+  if (asJson) {
+    console.log(JSON.stringify({suites: rootSuite.suites, stats: stats(rootSuite)}));
+  } else {
+    printTestSuites(rootSuite);
+    printStats(stats(rootSuite));
+  }
 };
 
 printAllFilesSuites(filenames);

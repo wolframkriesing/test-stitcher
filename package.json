@@ -29,5 +29,7 @@
     "mocha": "^7.1.0",
     "typescript": "^3.8.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "clipp": "0.0.5"
+  }
 }
