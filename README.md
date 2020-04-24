@@ -55,12 +55,8 @@ Extract the text from tests
 
 Statistics
 -----------
-{
-    "counts": {
-        "tests": 4,
-        "suites": 3
-    }
-}
+Number of suites: 3
+Number of tests : 4
 ```
 
 ## Why?
