@@ -14,6 +14,8 @@ Test descriptions are the human-readable describing a test, see examples below.
   a global nodejs installation, you can also do `npm install`)
 - `./run.sh npm run parse-files src/extractTextFromTests.spec.js`
   show all test descriptions of a local test file
+- `./run.sh npm run parse-files src/extractTextFromTests.spec.js -- --json`
+  show them as JSON, watch out to add the `--` before the parameter so it gets passed on to the node script
 - `./run.sh npm run parse-files https://katas.tddbin.com/katas/es1/language/global-api/parseInt.js https://katas.tddbin.com/katas/es1/language/array-api/sort-basics.js` show the tests from remote files (here two katas as used on [jskatas.org](https://jskatas.org))
 - ``./run.sh npm run parse-files `find ./src -iname *spec.js` `` to stitch all the tests for this project together  
   Note: using `./run.sh` mounts the project as a volume inside a docker container, that means only those 
@@ -58,6 +60,13 @@ Statistics
 Number of suites: 3
 Number of tests : 4
 ```
+
+To get the result as JSON do `npm run parse-files src/stats.spec.js -- --json` and you will get this on the
+command line:
+```json
+{"suites":[{"name":"src","suites":[{"name":"src/stats.spec.js","suites":[{"name":"Provide statistics about test suites","suites":[],"tests":[{"name":"GIVEN no test suites and no tests THEN return 0 for everything"},{"name":"GIVEN one test suite with no tests THEN return the counts: suites=1, tests=0"}],"origin":""}],"tests":[],"origin":"src/stats.spec.js"}],"tests":[],"origin":"src"}],"stats":{"counts":{"tests":2,"suites":3}}}
+```
+
 
 ## Why?
 I believe tests are not just for validating the code one writes, I believe **tests
